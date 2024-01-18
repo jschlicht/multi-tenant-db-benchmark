@@ -21,6 +21,8 @@ jooq-meta = { module = "org.jooq:jooq-meta", version.ref = "jooq" }
 jooq-postgresExtensions = { module = "org.jooq:jooq-postgres-extensions", version.ref = "jooq" }
 kotlinLoggingJvm = { module = "io.github.oshai:kotlin-logging-jvm", version = "5.1.0" }
 logback-classic = { module = "ch.qos.logback:logback-classic", version = "1.4.14" }
+mariadb = { module = "org.mariadb.jdbc:mariadb-java-client", version = "3.3.2" }
+mysql = { module = "com.mysql:mysql-connector-j", version = "8.3.0" }
 postgres = { module = "org.postgresql:postgresql", version = "42.7.1" }
 slf4j-api = { module = "org.slf4j:slf4j-api", version = "2.0.9" }
 testcontainers-mariadb = { module = "org.testcontainers:mariadb", version.ref = "test-containers" }

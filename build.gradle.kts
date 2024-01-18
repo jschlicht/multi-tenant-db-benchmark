@@ -27,6 +27,8 @@ dependencies {
     implementation(libs.logback.classic)
     implementation(libs.kotlinLoggingJvm)
     implementation(libs.slf4j.api)
+    implementation(libs.mariadb)
+    implementation(libs.mysql)
     implementation(libs.postgres)
     implementation(libs.testcontainers.mariadb)
     implementation(libs.testcontainers.mysql)

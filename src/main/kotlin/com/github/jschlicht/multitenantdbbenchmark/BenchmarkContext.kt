@@ -8,26 +8,17 @@ import java.sql.DriverManager
 
 private val logger = KotlinLogging.logger {}
 
-data class BenchmarkContext(val database: Database, val strategy: Strategy) : AutoCloseable {
-    private val container = database.createContainer()
-
+data class BenchmarkContext(val database: Database, val strategy: Strategy) {
     private val tables = listOf(
         ShopTable()
     )
 
     fun run() {
-        container.start()
-        DriverManager.getConnection(container.jdbcUrl, container.username, container.password).use { connection ->
-            logger.info { "Got connection for ${container.jdbcUrl}" }
-        }
-    }
-
-    override fun close() {
-        try {
-            container.stop()
-        } catch (ex: Exception) {
-            logger.error(ex) { "Failed to stop container" }
-            throw ex
+        database.createContainer().use { container ->
+            container.start()
+            DriverManager.getConnection(container.jdbcUrl, container.username, container.password).use { connection ->
+                logger.info { "Got connection for ${container.jdbcUrl}" }
+            }
         }
     }
 }

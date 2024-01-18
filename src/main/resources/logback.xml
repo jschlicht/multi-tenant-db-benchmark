@@ -1,0 +1,14 @@
+<configuration>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%date %highlight(%-5level) %cyan(%logger) - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="org.jooq.Constants" level="WARN" />
+    <logger name="org.jooq.impl.DefaultExecuteContext.logVersionSupport" level="WARN" />
+
+    <root level="info">
+        <appender-ref ref="STDOUT" />
+    </root>
+</configuration>
