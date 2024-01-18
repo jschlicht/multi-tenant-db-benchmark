@@ -1,7 +1,10 @@
+import io.gitlab.arturbosch.detekt.Detekt
+import io.gitlab.arturbosch.detekt.DetektCreateBaselineTask
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 
 plugins {
     alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.detekt)
 }
 
 group = "com.github.jschlicht"
@@ -12,6 +15,7 @@ repositories {
 }
 
 dependencies {
+    detektPlugins(libs.detekt.formatting)
     implementation(libs.apache.commons.csv)
     implementation(libs.apache.commons.io)
     implementation(libs.faker)
@@ -37,6 +41,33 @@ dependencies {
 
 tasks.test {
     useJUnitPlatform()
+}
+
+
+detekt {
+    allRules = false // activate all available (even unstable) rules.
+    autoCorrect = true
+    buildUponDefaultConfig = true // preconfigure defaults
+    config.setFrom("$projectDir/config/detekt.yml")
+    parallel = true
+}
+
+
+tasks.withType<Detekt>().configureEach {
+    reports {
+        html.required.set(true)
+        xml.required.set(true)
+        txt.required.set(true)
+        sarif.required.set(true)
+        md.required.set(true)
+    }
+}
+
+tasks.withType<Detekt>().configureEach {
+    jvmTarget = libs.versions.jdk.get()
+}
+tasks.withType<DetektCreateBaselineTask>().configureEach {
+    jvmTarget = libs.versions.jdk.get()
 }
 
 kotlin {

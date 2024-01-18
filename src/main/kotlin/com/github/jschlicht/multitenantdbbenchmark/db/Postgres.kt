@@ -1,9 +1,7 @@
 package com.github.jschlicht.multitenantdbbenchmark.db
 
-import org.testcontainers.containers.PostgreSQLContainer
+import org.testcontainers.utility.DockerImageName
 
-data object Postgres : PostgresBase("postgres", "postgres") {
-    override fun createContainer(): PostgreSQLContainer<*> {
-        return PostgreSQLContainer(containerName)
-    }
+data object Postgres : PostgresBase("postgres") {
+    override val dockerImageName: DockerImageName = DockerImageName.parse("postgres")
 }

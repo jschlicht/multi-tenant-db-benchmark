@@ -1,7 +1,6 @@
 package com.github.jschlicht.multitenantdbbenchmark.table
 
-abstract class Table {
-}
+interface Table
 
-abstract class GlobalTable : Table()
-abstract class TenantTable : Table()
+interface GlobalTable : Table
+interface TenantTable : Table

@@ -11,10 +11,18 @@ private val logger = KotlinLogging.logger {}
 
 fun main() {
     val allDatabases = listOf(MariaDB, MySQL, Postgres, Citus)
-    val allStrategies = listOf(Normalized, TenantIdSimple, TenantIdComposite, PartitionHash, PartitionList, Namespace, DistributedTable)
+    val allStrategies = listOf(
+        Normalized,
+        TenantIdSimple,
+        TenantIdComposite,
+        PartitionHash,
+        PartitionList,
+        Namespace,
+        DistributedTable
+    )
 
-    allDatabases.forEach { database ->
-        allStrategies.forEach { strategy ->
+    listOf(Citus).forEach { database ->
+        listOf(TenantIdSimple).forEach { strategy ->
             if (database.supports(strategy)) {
                 logger.info { "Running benchmark for ${database.key} with ${strategy.key}" }
                 BenchmarkContext(database, strategy).run()
