@@ -1,0 +1,28 @@
+[versions]
+jdk = "17"
+jooq = "3.19.1"
+kotlin = "1.9.21"
+
+[libraries]
+apache-commons-csv = { module = "org.apache.commons:commons-csv", version = "1.10.0" }
+apache-commons-io = { module = "commons-io:commons-io", version = "2.15.1" }
+faker = { module = "net.datafaker:datafaker", version = "2.0.2" }
+guava = { module = "com.google.guava:guava", version = "33.0.0-jre" }
+jackson-bom = { module = "com.fasterxml.jackson:jackson-bom", version = "2.16.0" }
+jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind" }
+jackson-datatype-jdk8 = { module = "com.fasterxml.jackson.datatype:jackson-datatype-jdk8" }
+jackson-datatype-jsr310 = { module = "com.fasterxml.jackson.datatype:jackson-datatype-jsr310" }
+jackson-module-kotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin" }
+jackson-module-parameterNames = { module = "com.fasterxml.jackson.module:jackson-module-parameter-names" }
+jooq-codegen = { module = "org.jooq:jooq-codegen", version.ref = "jooq" }
+jooq-jooq = { module = "org.jooq:jooq", version.ref = "jooq" }
+jooq-meta = { module = "org.jooq:jooq-meta", version.ref = "jooq" }
+jooq-postgresExtensions = { module = "org.jooq:jooq-postgres-extensions", version.ref = "jooq" }
+kotlinLoggingJvm = { module = "io.github.oshai:kotlin-logging-jvm", version = "5.1.0" }
+logback-classic = { module = "ch.qos.logback:logback-classic", version = "1.4.14" }
+postgres = { module = "org.postgresql:postgresql", version = "42.7.1" }
+slf4j-api = { module = "org.slf4j:slf4j-api", version = "2.0.9" }
+testcontainers-postgres = { module = "org.testcontainers:postgresql", version = "1.19.3" }
+
+[plugins]
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
