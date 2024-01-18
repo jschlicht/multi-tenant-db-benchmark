@@ -2,6 +2,7 @@
 jdk = "17"
 jooq = "3.19.1"
 kotlin = "1.9.21"
+test-containers = "1.19.3"
 
 [libraries]
 apache-commons-csv = { module = "org.apache.commons:commons-csv", version = "1.10.0" }
@@ -22,7 +23,9 @@ kotlinLoggingJvm = { module = "io.github.oshai:kotlin-logging-jvm", version = "5
 logback-classic = { module = "ch.qos.logback:logback-classic", version = "1.4.14" }
 postgres = { module = "org.postgresql:postgresql", version = "42.7.1" }
 slf4j-api = { module = "org.slf4j:slf4j-api", version = "2.0.9" }
-testcontainers-postgres = { module = "org.testcontainers:postgresql", version = "1.19.3" }
+testcontainers-mariadb = { module = "org.testcontainers:mariadb", version.ref = "test-containers" }
+testcontainers-mysql = { module = "org.testcontainers:mysql", version.ref = "test-containers" }
+testcontainers-postgres = { module = "org.testcontainers:postgresql", version.ref = "test-containers" }
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }

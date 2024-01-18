@@ -28,6 +28,8 @@ dependencies {
     implementation(libs.kotlinLoggingJvm)
     implementation(libs.slf4j.api)
     implementation(libs.postgres)
+    implementation(libs.testcontainers.mariadb)
+    implementation(libs.testcontainers.mysql)
     implementation(libs.testcontainers.postgres)
 }
 
