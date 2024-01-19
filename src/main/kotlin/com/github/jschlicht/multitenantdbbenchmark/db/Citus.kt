@@ -4,6 +4,11 @@ import com.github.jschlicht.multitenantdbbenchmark.strategy.Strategy
 import org.jooq.DSLContext
 import org.testcontainers.utility.DockerImageName
 
+enum class CitusTableType {
+    Distributed,
+    Reference
+}
+
 data object Citus : PostgresBase("citus") {
     override val dockerImageName: DockerImageName = DockerImageName.parse(
         "citusdata/citus"

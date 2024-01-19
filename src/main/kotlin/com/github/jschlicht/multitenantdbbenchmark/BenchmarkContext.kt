@@ -1,17 +1,19 @@
 package com.github.jschlicht.multitenantdbbenchmark
 
+import com.github.jschlicht.multitenantdbbenchmark.db.CitusTableType
 import com.github.jschlicht.multitenantdbbenchmark.db.Database
+import com.github.jschlicht.multitenantdbbenchmark.strategy.DistributedTable
 import com.github.jschlicht.multitenantdbbenchmark.strategy.Strategy
+import com.github.jschlicht.multitenantdbbenchmark.table.DbTable
 import com.github.jschlicht.multitenantdbbenchmark.table.GlobalTable
 import com.github.jschlicht.multitenantdbbenchmark.table.MultiTenantTable
 import com.github.jschlicht.multitenantdbbenchmark.table.ShopTable
 import com.github.jschlicht.multitenantdbbenchmark.util.AutoCloser
+import com.github.jschlicht.multitenantdbbenchmark.util.MdcKey
 import com.github.jschlicht.multitenantdbbenchmark.util.SqlOutputExecutionListener
-import com.google.common.io.Closer
 import io.github.oshai.kotlinlogging.KotlinLogging
-import org.apache.commons.io.IOUtils
+import io.github.oshai.kotlinlogging.withLoggingContext
 import org.jooq.DSLContext
-import org.jooq.SQLDialect
 import org.jooq.conf.RenderKeywordCase
 import org.jooq.conf.RenderQuotedNames
 import org.jooq.impl.DSL
@@ -83,13 +85,39 @@ data class BenchmarkContext(val database: Database, val strategy: Strategy, val 
         logger.info { "Running initial database setup" }
         database.setup(dsl)
 
+        val defaultSchema = database.defaultSchema
+
         globalTables.forEach { table ->
-            MDC.put("table", table.name)
-            logger.info { "Creating table" }
-            
-            table.definition(this, database.defaultSchema).forEach { statement ->
-                logger.debug { statement.sql }
-                dsl.execute(statement)
+            withLoggingContext(MdcKey.table to table.name) {
+                logger.info { "Creating table" }
+
+                table.definition(this, defaultSchema).forEach { statement ->
+                    logger.debug { statement.sql }
+                    dsl.execute(statement)
+                }
+
+                setupDistributedOrReferenceTable(table, defaultSchema)
+            }
+        }
+    }
+
+    private fun setupDistributedOrReferenceTable(table: DbTable, schema: String) {
+        if (strategy !is DistributedTable) {
+            return
+        }
+
+        val tableName = database.qualify(schema, table.name).unquotedName().toString()
+
+        when (table.citusTableType) {
+            CitusTableType.Distributed -> {
+                table.distributionColumn?.let { distributionColumn ->
+                    logger.info { "Creating distributed table" }
+                    dsl.execute("SELECT create_distributed_table(?, ?)", tableName, distributionColumn)
+                }
+            }
+            CitusTableType.Reference -> {
+                logger.info { "Creating reference table" }
+                dsl.execute("SELECT create_reference_table(?)", tableName)
             }
         }
     }

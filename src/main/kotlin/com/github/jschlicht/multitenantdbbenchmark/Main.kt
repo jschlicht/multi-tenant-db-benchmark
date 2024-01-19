@@ -9,7 +9,9 @@ import com.github.ajalt.clikt.parameters.types.choice
 import com.github.ajalt.clikt.parameters.types.path
 import com.github.jschlicht.multitenantdbbenchmark.db.*
 import com.github.jschlicht.multitenantdbbenchmark.strategy.*
+import com.github.jschlicht.multitenantdbbenchmark.util.MdcKey
 import io.github.oshai.kotlinlogging.KotlinLogging
+import io.github.oshai.kotlinlogging.withLoggingContext
 import org.slf4j.MDC
 import org.testcontainers.utility.TestcontainersConfiguration
 
@@ -40,17 +42,16 @@ class Benchmark : CliktCommand() {
     }
 
     private fun runStrategyForDb(strategy: Strategy, database: Database) {
-        MDC.put("db", database.key)
-        MDC.put("strategy", strategy.key)
+        withLoggingContext(MdcKey.db to database.key, MdcKey.strategy to strategy.key) {
+            if (database.supports(strategy)) {
+                logger.info { "Running benchmark" }
 
-        if (database.supports(strategy)) {
-            logger.info { "Running benchmark" }
-
-            BenchmarkContext(database, strategy, output).use {
-                it.run()
+                BenchmarkContext(database, strategy, output).use {
+                    it.run()
+                }
+            } else {
+                logger.info { "Skipping benchmark" }
             }
-        } else {
-            logger.info { "Skipping benchmark" }
         }
     }
 
