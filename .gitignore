@@ -298,3 +298,4 @@ gradle-app.setting
 # End of https://www.toptal.com/developers/gitignore/api/jetbrains+all,kotlin,java,gradle,windows,linux,macos,eclipse
 
 .idea
+output/

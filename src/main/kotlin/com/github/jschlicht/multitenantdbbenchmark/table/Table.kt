@@ -1,6 +1,13 @@
 package com.github.jschlicht.multitenantdbbenchmark.table
 
-interface Table
+import com.github.jschlicht.multitenantdbbenchmark.BenchmarkContext
+import org.jooq.Query
+import org.jooq.Statement
+
+interface Table {
+    val name: String
+    fun definition(ctx: BenchmarkContext, schema: String) : List<Query>
+}
 
 interface GlobalTable : Table
-interface TenantTable : Table
+interface MultiTenantTable : Table

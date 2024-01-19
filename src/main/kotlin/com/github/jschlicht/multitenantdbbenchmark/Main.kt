@@ -6,12 +6,11 @@ import com.github.ajalt.clikt.parameters.options.defaultLazy
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.split
 import com.github.ajalt.clikt.parameters.types.choice
-import com.github.jschlicht.multitenantdbbenchmark.db.Citus
-import com.github.jschlicht.multitenantdbbenchmark.db.MariaDB
-import com.github.jschlicht.multitenantdbbenchmark.db.MySQL
-import com.github.jschlicht.multitenantdbbenchmark.db.Postgres
+import com.github.ajalt.clikt.parameters.types.path
+import com.github.jschlicht.multitenantdbbenchmark.db.*
 import com.github.jschlicht.multitenantdbbenchmark.strategy.*
 import io.github.oshai.kotlinlogging.KotlinLogging
+import org.slf4j.MDC
 import org.testcontainers.utility.TestcontainersConfiguration
 
 private val logger = KotlinLogging.logger {}
@@ -23,6 +22,9 @@ class Benchmark : CliktCommand() {
         .defaultLazy { databaseChoices.values.toList() }
         .check("at least one database must be selected") { it.isNotEmpty() }
 
+    val output by option(help = "Output generated .sql files to this folder")
+        .path(canBeFile = false, canBeDir = true, mustExist = false, mustBeWritable = true)
+
     val strategies by option(help = "Select which multi-tenant strategies to benchmark")
         .choice(strategyChoices)
         .split(",")
@@ -32,13 +34,23 @@ class Benchmark : CliktCommand() {
     override fun run() {
         databases.forEach { database ->
             strategies.forEach { strategy ->
-                if (database.supports(strategy)) {
-                    logger.info { "Running benchmark for ${database.key} with strategy ${strategy.key}" }
-                    BenchmarkContext(database, strategy).run()
-                } else {
-                    logger.info { "Skipping benchmark for ${database.key} with strategy ${strategy.key}" }
-                }
+                runStrategyForDb(strategy, database)
             }
+        }
+    }
+
+    private fun runStrategyForDb(strategy: Strategy, database: Database) {
+        MDC.put("db", database.key)
+        MDC.put("strategy", strategy.key)
+
+        if (database.supports(strategy)) {
+            logger.info { "Running benchmark" }
+
+            BenchmarkContext(database, strategy, output).use {
+                it.run()
+            }
+        } else {
+            logger.info { "Skipping benchmark" }
         }
     }
 
