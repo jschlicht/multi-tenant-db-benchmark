@@ -18,7 +18,6 @@ import org.jooq.conf.RenderKeywordCase
 import org.jooq.conf.RenderQuotedNames
 import org.jooq.impl.DSL
 import org.jooq.impl.DefaultConfiguration
-import org.slf4j.MDC
 import org.testcontainers.containers.JdbcDatabaseContainer
 import java.io.PrintWriter
 import java.nio.file.Path

@@ -15,10 +15,6 @@ class AutoCloser : AutoCloseable {
         return autoCloseable
     }
 
-    fun rethrow(ex: Exception) : Nothing {
-        throw save(ex)
-    }
-
     fun save(ex: Exception) : Exception {
         return exceptionResult.let {
             if (it == null) {

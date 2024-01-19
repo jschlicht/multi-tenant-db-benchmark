@@ -1,7 +1,9 @@
 [versions]
 jdk = "17"
 jooq = "3.19.1"
+junit = "5.8.2"
 kotlin = "1.9.21"
+kotest = "5.8.0"
 test-containers = "1.19.3"
 
 [libraries]
@@ -21,6 +23,9 @@ jooq-codegen = { module = "org.jooq:jooq-codegen", version.ref = "jooq" }
 jooq-jooq = { module = "org.jooq:jooq", version.ref = "jooq" }
 jooq-meta = { module = "org.jooq:jooq-meta", version.ref = "jooq" }
 jooq-postgresExtensions = { module = "org.jooq:jooq-postgres-extensions", version.ref = "jooq" }
+junit-jupter-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit" }
+junit-jupter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit" }
+kotest-assertions-core = { module = "io.kotest:kotest-assertions-core-jvm", version.ref = "kotest" }
 kotlinLoggingJvm = { module = "io.github.oshai:kotlin-logging-jvm", version = "5.1.0" }
 logback-classic = { module = "ch.qos.logback:logback-classic", version = "1.4.14" }
 mariadb = { module = "org.mariadb.jdbc:mariadb-java-client", version = "3.3.2" }
