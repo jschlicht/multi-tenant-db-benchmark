@@ -7,6 +7,8 @@
 
     <logger name="org.jooq.Constants" level="WARN" />
     <logger name="org.jooq.impl.DefaultExecuteContext.logVersionSupport" level="WARN" />
+    <logger name="org.testcontainers" level="WARN" />
+    <logger name="tc" level="WARN" />
 
     <root level="info">
         <appender-ref ref="STDOUT" />

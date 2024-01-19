@@ -3,6 +3,7 @@ import io.gitlab.arturbosch.detekt.DetektCreateBaselineTask
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 
 plugins {
+    application
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.detekt)
 }
@@ -18,6 +19,7 @@ dependencies {
     detektPlugins(libs.detekt.formatting)
     implementation(libs.apache.commons.csv)
     implementation(libs.apache.commons.io)
+    implementation(libs.clikt)
     implementation(libs.faker)
     implementation(libs.guava)
     implementation(platform(libs.jackson.bom))
@@ -75,4 +77,8 @@ kotlin {
     compilerOptions {
         languageVersion.set(KotlinVersion.KOTLIN_2_0)
     }
+}
+
+application {
+    mainClass = "com.github.jschlicht.multitenantdbbenchmark"
 }

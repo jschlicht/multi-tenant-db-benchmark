@@ -2,6 +2,11 @@ formatting:
   NoWildcardImports:
     active: false
 
+naming:
+  MemberNameEqualsClassName:
+    ignoreFunction:
+      - "main"
+
 style:
   WildcardImport:
     active: false
