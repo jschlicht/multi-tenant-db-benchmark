@@ -3,9 +3,9 @@ package com.github.jschlicht.multitenantdbbenchmark.db
 import com.github.jschlicht.multitenantdbbenchmark.strategy.DistributedTable
 import com.github.jschlicht.multitenantdbbenchmark.strategy.Strategy
 import org.jooq.DSLContext
+import org.jooq.DataType
 import org.jooq.Name
 import org.jooq.SQLDialect
-import org.jooq.impl.DSL
 import org.jooq.impl.DSL.name
 import org.testcontainers.containers.JdbcDatabaseContainer
 
@@ -17,6 +17,8 @@ sealed class Database(val key: String, val dialect: SQLDialect, val defaultSchem
             name(table)
         }
     }
+
+    abstract val caseInsensitiveType : DataType<String>
 
     open fun setup(dsl: DSLContext) {
     }

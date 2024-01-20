@@ -1,5 +1,6 @@
 package com.github.jschlicht.multitenantdbbenchmark.db
 
+import com.github.jschlicht.multitenantdbbenchmark.strategy.DistributedTable
 import com.github.jschlicht.multitenantdbbenchmark.strategy.Strategy
 import org.jooq.DSLContext
 import org.testcontainers.utility.DockerImageName
@@ -20,6 +21,6 @@ data object Citus : PostgresBase("citus") {
     }
 
     override fun supports(strategy: Strategy): Boolean {
-        return true
+        return strategy is DistributedTable
     }
 }

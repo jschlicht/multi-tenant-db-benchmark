@@ -1,5 +1,7 @@
 package com.github.jschlicht.multitenantdbbenchmark
 
+import com.github.jschlicht.multitenantdbbenchmark.data.DataGenerator
+import com.github.jschlicht.multitenantdbbenchmark.data.GlobalData
 import com.github.jschlicht.multitenantdbbenchmark.db.CitusTableType
 import com.github.jschlicht.multitenantdbbenchmark.db.Database
 import com.github.jschlicht.multitenantdbbenchmark.strategy.DistributedTable
@@ -26,7 +28,12 @@ import java.sql.DriverManager
 
 private val logger = KotlinLogging.logger {}
 
-data class BenchmarkContext(val database: Database, val strategy: Strategy, val outputPath: Path?) : AutoCloseable {
+data class BenchmarkContext(
+    val database: Database,
+    val strategy: Strategy,
+    val outputPath: Path?,
+    val verbose: Boolean
+) : AutoCloseable {
     private val closer = AutoCloser()
 
     private val globalTables = listOf<GlobalTable>(
@@ -61,9 +68,7 @@ data class BenchmarkContext(val database: Database, val strategy: Strategy, val 
             dsl = DSL.using(DefaultConfiguration().apply {
                 set(connection)
                 set(database.dialect)
-                if (printWriter != null) {
-                    set(SqlOutputExecutionListener(printWriter))
-                }
+                set(SqlOutputExecutionListener(printWriter, verbose))
                 settings().apply {
                     isRenderFormatted = true
                     isRenderSchema = true
@@ -84,19 +89,32 @@ data class BenchmarkContext(val database: Database, val strategy: Strategy, val 
         logger.info { "Running initial database setup" }
         database.setup(dsl)
 
+        logger.info { "Generating data" }
+        val dataGenerator = DataGenerator()
+        val globalData = dataGenerator.globalData()
+
         val defaultSchema = database.defaultSchema
 
         globalTables.forEach { table ->
             withLoggingContext(MdcKey.table to table.name) {
-                logger.info { "Creating table" }
-
-                table.definition(this, defaultSchema).forEach { statement ->
-                    logger.debug { statement.sql }
-                    dsl.execute(statement)
-                }
-
+                createTable(table, database.defaultSchema)
                 setupDistributedOrReferenceTable(table, defaultSchema)
+                insertGlobalData(table, defaultSchema, globalData)
             }
+        }
+    }
+
+    private fun createTable(table: DbTable, schema: String) {
+        logger.info { "Creating table" }
+
+        dsl.execute(table.definition(this, schema))
+    }
+
+    private fun insertGlobalData(table: DbTable, schema: String, globalData: GlobalData) {
+        logger.info { "Populating table" }
+
+        table.globalData(this, schema, globalData)?.let {
+            dsl.execute(it)
         }
     }
 
