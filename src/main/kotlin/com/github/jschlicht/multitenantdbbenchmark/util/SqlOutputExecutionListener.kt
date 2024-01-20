@@ -28,7 +28,6 @@ class SqlOutputExecutionListener(
                 if (verbose) {
                     logger.info { inlineSql }
                 }
-
             } else {
                 logger.warn { "Received an execution logger for a non-query" }
             }

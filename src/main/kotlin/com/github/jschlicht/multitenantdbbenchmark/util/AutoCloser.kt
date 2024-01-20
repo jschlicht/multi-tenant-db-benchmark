@@ -15,7 +15,7 @@ class AutoCloser : AutoCloseable {
         return autoCloseable
     }
 
-    fun save(ex: Exception) : Exception {
+    fun save(ex: Exception): Exception {
         return exceptionResult.let {
             if (it == null) {
                 exceptionResult = ex

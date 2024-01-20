@@ -10,7 +10,7 @@ import org.jooq.impl.DSL.name
 import org.testcontainers.containers.JdbcDatabaseContainer
 
 sealed class Database(val key: String, val dialect: SQLDialect, val defaultSchema: String) {
-    fun qualify(schema: String, table: String) : Name {
+    fun qualify(schema: String, table: String): Name {
         return if (schema != defaultSchema) {
             name(schema, table)
         } else {
@@ -18,7 +18,7 @@ sealed class Database(val key: String, val dialect: SQLDialect, val defaultSchem
         }
     }
 
-    abstract val caseInsensitiveType : DataType<String>
+    abstract val caseInsensitiveType: DataType<String>
 
     open fun setup(dsl: DSLContext) {
     }

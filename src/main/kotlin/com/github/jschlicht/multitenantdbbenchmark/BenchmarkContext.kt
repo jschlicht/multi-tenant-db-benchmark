@@ -40,8 +40,6 @@ data class BenchmarkContext(
         ShopTable
     )
 
-    private val multiTenantTables = listOf<MultiTenantTable>()
-
     val container: JdbcDatabaseContainer<*>
     val connection: Connection
     val dsl: DSLContext
@@ -52,8 +50,11 @@ data class BenchmarkContext(
             container = closer.register(database.createContainer())
             container.start()
 
-            connection = closer.register(DriverManager.getConnection(container.jdbcUrl,
-                container.username, container.password)
+            connection = closer.register(
+                DriverManager.getConnection(
+                    container.jdbcUrl,
+                    container.username, container.password
+                )
             )
 
             outputPath.let {
@@ -65,18 +66,19 @@ data class BenchmarkContext(
                 }
             }
 
-            dsl = DSL.using(DefaultConfiguration().apply {
-                set(connection)
-                set(database.dialect)
-                set(SqlOutputExecutionListener(printWriter, verbose))
-                settings().apply {
-                    isRenderFormatted = true
-                    isRenderSchema = true
-                    renderKeywordCase = RenderKeywordCase.UPPER
-                    renderQuotedNames = RenderQuotedNames.EXPLICIT_DEFAULT_UNQUOTED
+            dsl = DSL.using(
+                DefaultConfiguration().apply {
+                    set(connection)
+                    set(database.dialect)
+                    set(SqlOutputExecutionListener(printWriter, verbose))
+                    settings().apply {
+                        isRenderFormatted = true
+                        isRenderSchema = true
+                        renderKeywordCase = RenderKeywordCase.UPPER
+                        renderQuotedNames = RenderQuotedNames.EXPLICIT_DEFAULT_UNQUOTED
+                    }
                 }
-            })
-
+            )
         } catch (ex: Exception) {
             logger.error(ex) { "Error setting up benchmark context" }
             closer.save(ex)

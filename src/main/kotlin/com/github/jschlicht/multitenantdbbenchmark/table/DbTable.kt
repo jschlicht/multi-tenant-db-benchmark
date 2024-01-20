@@ -10,8 +10,8 @@ interface DbTable {
         get() = null
     val citusTableType: CitusTableType
     val name: String
-    fun definition(ctx: BenchmarkContext, schema: String) : Query
-    fun globalData(ctx: BenchmarkContext, schema: String, globalData: GlobalData) : Query?
+    fun definition(ctx: BenchmarkContext, schema: String): Query
+    fun globalData(ctx: BenchmarkContext, schema: String, globalData: GlobalData): Query?
 }
 
 interface GlobalTable : DbTable {

@@ -1,7 +1,6 @@
 package com.github.jschlicht.multitenantdbbenchmark.data
 
 import com.github.jschlicht.multitenantdbbenchmark.util.FakerExtensions.localRangeFromPastToPresent
-import com.github.jschlicht.multitenantdbbenchmark.util.FakerExtensions.rangeFromPastToPresent
 import net.datafaker.Faker
 import java.util.Random
 
@@ -13,13 +12,13 @@ class DataGenerator {
     private val faker = Faker(Random(DETERMINISTIC_SEED))
     private var shopCounter = 0L
 
-    fun globalData(shopCount: Int = SHOP_COUNT) : GlobalData {
+    fun globalData(shopCount: Int = SHOP_COUNT): GlobalData {
         return GlobalData(
             shops = shops(shopCount)
         )
     }
 
-    fun shops(count: Int) : List<Shop> {
+    fun shops(count: Int): List<Shop> {
         return (1..count).map {
             val (createdAt, updatedAt) = faker.date().localRangeFromPastToPresent()
 

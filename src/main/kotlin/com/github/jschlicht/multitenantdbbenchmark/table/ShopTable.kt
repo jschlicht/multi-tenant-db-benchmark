@@ -4,6 +4,10 @@ import com.github.jschlicht.multitenantdbbenchmark.BenchmarkContext
 import com.github.jschlicht.multitenantdbbenchmark.data.GlobalData
 import com.github.jschlicht.multitenantdbbenchmark.db.CitusTableType
 import org.jooq.Query
+import org.jooq.Record
+import org.jooq.Records
+import org.jooq.Row
+import org.jooq.RowN
 import org.jooq.impl.DSL.*
 import org.jooq.impl.SQLDataType
 
@@ -36,19 +40,24 @@ object ShopTable : GlobalTable {
         }
     }
 
-    override fun globalData(ctx: BenchmarkContext, schema: String, globalData: GlobalData) : Query {
+    override fun globalData(ctx: BenchmarkContext, schema: String, globalData: GlobalData): Query {
         return ctx.run {
+            val rows : List<RowN> = globalData.shops.map { shop ->
+                row(listOf(
+                    shop.id, shop.address1, shop.address2, shop.city, shop.countryCode, shop.createdAt,
+                    shop.customerEmail, shop.currency, shop.domain, shop.email, shop.name, shop.phone,
+                    shop.province, shop.shopOwner, shop.timezone, shop.updatedAt, shop.zip
+                ))
+            }
+
             dsl.insertInto(table(database.qualify(schema, name)))
-                .columns(listOf("id", "address1", "address2", "city", "country_code", "created_at",
-                    "customer_email",  "currency", "domain", "email", "name", "phone",
-                    "province", "shop_owner", "timezone", "updated_at", "zip"
-                ).map { field(it) }).also {
-                    globalData.shops.forEach { shop ->
-                        it.values(shop.id, shop.address1, shop.address2, shop.city, shop.countryCode, shop.createdAt,
-                            shop.customerEmail, shop.currency, shop.domain, shop.email, shop.name, shop.phone,
-                            shop.province, shop.shopOwner, shop.timezone, shop.updatedAt, shop.zip)
-                    }
-                }
+                .columns(
+                    listOf(
+                        "id", "address1", "address2", "city", "country_code", "created_at",
+                        "customer_email", "currency", "domain", "email", "name", "phone",
+                        "province", "shop_owner", "timezone", "updated_at", "zip"
+                    ).map { field(it) }
+                ).valuesOfRows(rows)
         }
     }
 }
