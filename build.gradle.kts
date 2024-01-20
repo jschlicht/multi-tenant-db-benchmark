@@ -17,19 +17,9 @@ repositories {
 
 dependencies {
     detektPlugins(libs.detekt.formatting)
-    implementation(libs.apache.commons.csv)
-    implementation(libs.apache.commons.io)
     implementation(libs.clikt)
     implementation(libs.faker)
-    implementation(libs.guava)
-    implementation(platform(libs.jackson.bom))
-    implementation(libs.jackson.databind)
-    implementation(libs.jackson.datatype.jdk8)
-    implementation(libs.jackson.datatype.jsr310)
-    implementation(libs.jackson.module.kotlin)
-    implementation(libs.jackson.module.parameterNames)
     implementation(libs.jooq.jooq)
-    implementation(libs.jooq.postgresExtensions)
     testImplementation(libs.kotest.assertions.core)
     testImplementation(libs.junit.jupter.api)
     testRuntimeOnly(libs.junit.jupter.engine)
@@ -50,9 +40,9 @@ tasks.test {
 
 
 detekt {
-    allRules = false // activate all available (even unstable) rules.
+    allRules = false
     autoCorrect = true
-    buildUponDefaultConfig = true // preconfigure defaults
+    buildUponDefaultConfig = true
     config.setFrom("$projectDir/config/detekt.yml")
     parallel = true
 }
