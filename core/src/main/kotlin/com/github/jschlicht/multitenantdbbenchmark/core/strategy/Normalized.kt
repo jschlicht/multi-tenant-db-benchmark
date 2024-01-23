@@ -1,4 +1,4 @@
-package com.github.jschlicht.multitenantdbbenchmark.strategy
+package com.github.jschlicht.multitenantdbbenchmark.core.strategy
 
 data object Normalized : Strategy("normalized") {
     override val simpleKeys = true

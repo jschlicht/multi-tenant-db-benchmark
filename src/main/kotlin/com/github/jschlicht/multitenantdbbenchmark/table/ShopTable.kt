@@ -2,7 +2,7 @@ package com.github.jschlicht.multitenantdbbenchmark.table
 
 import com.github.jschlicht.multitenantdbbenchmark.BenchmarkContext
 import com.github.jschlicht.multitenantdbbenchmark.data.GlobalData
-import com.github.jschlicht.multitenantdbbenchmark.db.CitusTableType
+import com.github.jschlicht.multitenantdbbenchmark.core.db.CitusTableType
 import org.jooq.Query
 import org.jooq.Record
 import org.jooq.Records

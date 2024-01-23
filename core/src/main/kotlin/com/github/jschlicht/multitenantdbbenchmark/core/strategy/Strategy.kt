@@ -1,4 +1,4 @@
-package com.github.jschlicht.multitenantdbbenchmark.strategy
+package com.github.jschlicht.multitenantdbbenchmark.core.strategy
 
 sealed class Strategy(val key: String) {
     abstract val simpleKeys: Boolean

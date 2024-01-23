@@ -1,4 +1,4 @@
-package com.github.jschlicht.multitenantdbbenchmark.strategy
+package com.github.jschlicht.multitenantdbbenchmark.core.strategy
 
 data object Namespace : Strategy("namespace") {
     override val simpleKeys = true

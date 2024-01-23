@@ -1,6 +1,6 @@
-package com.github.jschlicht.multitenantdbbenchmark.db
+package com.github.jschlicht.multitenantdbbenchmark.core.db
 
-import com.github.jschlicht.multitenantdbbenchmark.util.PostgresDataType
+import com.github.jschlicht.multitenantdbbenchmark.core.util.PostgresDataType
 import org.jooq.DSLContext
 import org.jooq.SQLDialect
 import org.testcontainers.containers.PostgreSQLContainer

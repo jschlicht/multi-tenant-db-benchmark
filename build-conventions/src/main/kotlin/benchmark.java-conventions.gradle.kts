@@ -6,9 +6,6 @@ plugins {
 
 val libs = the<LibrariesForLibs>()
 
-group = "com.github.jschlicht"
-version = "1.0-SNAPSHOT"
-
 repositories {
     mavenCentral()
 }

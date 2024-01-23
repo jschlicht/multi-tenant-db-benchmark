@@ -7,7 +7,11 @@ repositories {
     mavenCentral()
 }
 
+group = "com.github.jschlicht"
+version = "1.0-SNAPSHOT"
+
 dependencies {
+    implementation(project(":core"))
     implementation(libs.clikt)
     implementation(libs.faker)
     implementation(libs.jooq.jooq)

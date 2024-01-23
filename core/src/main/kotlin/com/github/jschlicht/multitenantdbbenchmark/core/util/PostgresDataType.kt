@@ -1,4 +1,4 @@
-package com.github.jschlicht.multitenantdbbenchmark.util
+package com.github.jschlicht.multitenantdbbenchmark.core.util
 
 import org.jooq.SQLDialect
 import org.jooq.impl.BuiltInDataType

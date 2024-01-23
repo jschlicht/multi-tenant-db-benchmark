@@ -2,10 +2,10 @@ package com.github.jschlicht.multitenantdbbenchmark
 
 import com.github.jschlicht.multitenantdbbenchmark.data.DataGenerator
 import com.github.jschlicht.multitenantdbbenchmark.data.GlobalData
-import com.github.jschlicht.multitenantdbbenchmark.db.CitusTableType
-import com.github.jschlicht.multitenantdbbenchmark.db.Database
-import com.github.jschlicht.multitenantdbbenchmark.strategy.DistributedTable
-import com.github.jschlicht.multitenantdbbenchmark.strategy.Strategy
+import com.github.jschlicht.multitenantdbbenchmark.core.db.CitusTableType
+import com.github.jschlicht.multitenantdbbenchmark.core.db.Database
+import com.github.jschlicht.multitenantdbbenchmark.core.strategy.DistributedTable
+import com.github.jschlicht.multitenantdbbenchmark.core.strategy.Strategy
 import com.github.jschlicht.multitenantdbbenchmark.table.DbTable
 import com.github.jschlicht.multitenantdbbenchmark.table.GlobalTable
 import com.github.jschlicht.multitenantdbbenchmark.table.MultiTenantTable

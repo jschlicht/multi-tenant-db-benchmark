@@ -1,4 +1,4 @@
-package com.github.jschlicht.multitenantdbbenchmark.db
+package com.github.jschlicht.multitenantdbbenchmark.core.db
 
 import org.jooq.SQLDialect
 import org.testcontainers.containers.MariaDBContainer

@@ -1,7 +1,7 @@
-package com.github.jschlicht.multitenantdbbenchmark.db
+package com.github.jschlicht.multitenantdbbenchmark.core.db
 
-import com.github.jschlicht.multitenantdbbenchmark.strategy.DistributedTable
-import com.github.jschlicht.multitenantdbbenchmark.strategy.Strategy
+import com.github.jschlicht.multitenantdbbenchmark.core.strategy.DistributedTable
+import com.github.jschlicht.multitenantdbbenchmark.core.strategy.Strategy
 import org.jooq.DSLContext
 import org.jooq.DataType
 import org.jooq.Name
