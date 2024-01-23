@@ -2,7 +2,7 @@
 jdk = "17"
 jooq = "3.19.1"
 junit = "5.8.2"
-kotlin = "1.9.21"
+kotlin = "1.9.22"
 kotest = "5.8.0"
 test-containers = "1.19.3"
 
@@ -10,6 +10,8 @@ test-containers = "1.19.3"
 clikt = { module = "com.github.ajalt.clikt:clikt", version = "4.2.2" }
 detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version = "1.23.4" }
 faker = { module = "net.datafaker:datafaker", version = "2.0.2" }
+gradleplugin-detekt = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version = "1.23.4" }
+gradleplugin-kotlin-jvm = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 jooq-jooq = { module = "org.jooq:jooq", version.ref = "jooq" }
 junit-jupter-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit" }
 junit-jupter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit" }
@@ -25,5 +27,4 @@ testcontainers-mysql = { module = "org.testcontainers:mysql", version.ref = "tes
 testcontainers-postgres = { module = "org.testcontainers:postgresql", version.ref = "test-containers" }
 
 [plugins]
-detekt = { id = "io.gitlab.arturbosch.detekt", version = "1.23.4" }
-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+benchmark-javaConventions = { id = "benchmark.java-conventions", version = "x" }
