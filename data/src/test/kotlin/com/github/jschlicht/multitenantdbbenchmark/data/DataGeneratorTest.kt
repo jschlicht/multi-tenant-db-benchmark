@@ -1,4 +1,4 @@
-package com.github.jschlicht.multitenantdbbenchmark
+package com.github.jschlicht.multitenantdbbenchmark.data
 
 import com.github.jschlicht.multitenantdbbenchmark.data.DataGenerator
 import io.kotest.matchers.shouldBe
