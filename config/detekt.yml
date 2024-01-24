@@ -3,6 +3,8 @@ exceptions:
     active: false
 
 formatting:
+  MaximumLineLength:
+    active: false
   NoWildcardImports:
     active: false
 
@@ -12,5 +14,7 @@ naming:
       - "main"
 
 style:
+  MaxLineLength:
+    active: false
   WildcardImport:
     active: false

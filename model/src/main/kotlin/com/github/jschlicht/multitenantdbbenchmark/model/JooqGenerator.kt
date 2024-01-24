@@ -12,7 +12,7 @@ import org.jooq.meta.postgres.PostgresDatabase
 
 class JooqGenerator {
     fun run() {
-        BenchmarkContext(database = Postgres, strategy = TenantIdComposite, outputPath = null, verbose = false).use {
+        BenchmarkContext(database = Postgres, strategy = TenantIdComposite, outputPath = null, verbose = false, hashPartitionCount = 0).use {
             DefinitionGenerator(it).run(shopIds = listOf())
 
             Configuration().apply {

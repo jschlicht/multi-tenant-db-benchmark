@@ -39,7 +39,7 @@ class DataWriter(private val ctx: BenchmarkContext) {
         return if (alwaysInsertTenantId || ctx.strategy.denormalizedTenantId) {
             allFields.toList()
         } else {
-            allFields.filter { it.name != "store_id" }
+            allFields.filter { it.name != "shop_id" }
         }
     }
 }

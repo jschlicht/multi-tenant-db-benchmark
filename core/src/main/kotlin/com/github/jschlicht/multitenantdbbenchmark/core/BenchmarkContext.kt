@@ -25,7 +25,8 @@ data class BenchmarkContext(
     val database: Database,
     val strategy: Strategy,
     val outputPath: Path?,
-    val verbose: Boolean
+    val verbose: Boolean,
+    val hashPartitionCount: Int
 ) : AutoCloseable {
     private val closer = AutoCloser()
 
