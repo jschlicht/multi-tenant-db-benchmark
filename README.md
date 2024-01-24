@@ -56,6 +56,10 @@ Uses Citus's create_distributed_table on a [single database node](https://www.ci
 * MySQL 8.2
 * MariaDB 11.3
 
+At this time, hash and list based partitioning are not tested against MySQL/MariaDB.
+Using these features [prevents the use of foreign keys](https://mariadb.com/kb/en/partitioning-limitations/) and [requires the id column to come first in the primary key](https://mariadb.com/kb/en/partition-maintenance/).
+Support for these strategies may be added to the benchmark at a later date. 
+
 ## Getting Started
 ### Prerequisites
 TODO: Java
