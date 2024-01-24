@@ -1,4 +1,4 @@
-package com.github.jschlicht.multitenantdbbenchmark.util
+package com.github.jschlicht.multitenantdbbenchmark.data
 
 import net.datafaker.providers.base.DateAndTime
 import java.time.Instant
@@ -17,14 +17,20 @@ object FakerExtensions {
     private val minDate = Date.from(minInstant)
 
     fun DateAndTime.rangeFromPastToPresent(): Pair<Instant, Instant> {
-        val firstDate = between(minDate, maxDate)
+        val firstDate = between(
+            minDate,
+            maxDate
+        )
         val secondDate = between(firstDate, maxDate)
 
         return firstDate.toInstant() to secondDate.toInstant()
     }
 
     fun DateAndTime.localRangeFromPastToPresent(): Pair<LocalDateTime, LocalDateTime> {
-        val firstDate = between(minDate, maxDate)
+        val firstDate = between(
+            minDate,
+            maxDate
+        )
         val secondDate = between(firstDate, maxDate)
 
         return LocalDateTime.ofInstant(firstDate.toInstant(), ZoneOffset.UTC) to

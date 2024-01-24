@@ -5,6 +5,7 @@ import com.github.jschlicht.multitenantdbbenchmark.core.db.Postgres
 import com.github.jschlicht.multitenantdbbenchmark.core.strategy.TenantIdComposite
 import com.github.jschlicht.multitenantdbbenchmark.definition.DefinitionGenerator
 import org.jooq.codegen.GenerationTool
+import org.jooq.codegen.KotlinGenerator
 import org.jooq.meta.jaxb.*
 import org.jooq.meta.jaxb.Target
 import org.jooq.meta.postgres.PostgresDatabase
@@ -15,6 +16,8 @@ class JooqGenerator {
             DefinitionGenerator(it).run(shopIds = listOf())
 
             Configuration().apply {
+                onUnused = OnError.FAIL
+
                 jdbc = Jdbc().apply {
                     driver = org.postgresql.Driver::class.qualifiedName
                     url = it.container.jdbcUrl
@@ -23,9 +26,13 @@ class JooqGenerator {
                 }
 
                 generator = Generator().apply {
+                    name = KotlinGenerator::class.qualifiedName
+
                     database = Database().apply {
                         name = PostgresDatabase::class.qualifiedName
                         inputSchema = "public"
+
+                        recordTimestampFields = "updated_at"
 
                         excludes = listOf("citext.*","max", "min", "regexp.*", "replace", "split_part", "strpos",
                             "textic.*", "translate"
@@ -33,6 +40,12 @@ class JooqGenerator {
                     }
 
                     generate = Generate().apply {
+                        isKotlinNotNullPojoAttributes = true
+                        isPojos = true
+                        isPojosEqualsAndHashCode = false
+                        isPojosToString = false
+                        isPojosAsKotlinDataClasses = true
+                        isRelations = false
                     }
 
                     target = Target().apply {

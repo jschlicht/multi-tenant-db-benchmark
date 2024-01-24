@@ -1,6 +1,7 @@
 package com.github.jschlicht.multitenantdbbenchmark.data
 
-import com.github.jschlicht.multitenantdbbenchmark.util.FakerExtensions.localRangeFromPastToPresent
+import com.github.jschlicht.multitenantdbbenchmark.data.FakerExtensions.localRangeFromPastToPresent
+import com.github.jschlicht.multitenantdbbenchmark.model.jooq.tables.pojos.Shop
 import net.datafaker.Faker
 import java.util.Random
 

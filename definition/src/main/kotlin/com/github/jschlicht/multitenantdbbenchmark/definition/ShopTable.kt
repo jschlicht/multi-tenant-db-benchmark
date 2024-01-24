@@ -7,7 +7,7 @@ import org.jooq.impl.DSL.*
 import org.jooq.impl.SQLDataType
 
 object ShopTable : GlobalTable {
-    override val name = "shops"
+    override val name = "shop"
     override val citusTableType = CitusTableType.Distributed
     override val distributionColumn = "id"
 
