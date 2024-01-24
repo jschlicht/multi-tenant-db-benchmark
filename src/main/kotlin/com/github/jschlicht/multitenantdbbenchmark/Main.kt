@@ -15,6 +15,8 @@ import java.util.*
 
 private val logger = KotlinLogging.logger {}
 
+private const val defaultHashPartitionCount = 64
+
 class Benchmark : CliktCommand() {
     val databases by option("--databases", "-d", help = "Select which databases to benchmark")
         .choice(databaseChoices)
@@ -27,7 +29,7 @@ class Benchmark : CliktCommand() {
 
     val hashPartitionCount by option("--partitions", "-p", help = "Number of partitions to use for hash partitioning")
         .int()
-        .default(64)
+        .default(defaultHashPartitionCount)
         .check("must be greater than 0") { it > 0 }
 
     val strategies by option("--strategies", "-s", help = "Select which multi-tenant strategies to benchmark")

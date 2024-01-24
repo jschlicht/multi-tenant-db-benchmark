@@ -43,13 +43,13 @@ class DefinitionGenerator(private val ctx: BenchmarkContext) {
     }
 
     private fun processTable(table: DbTable, schema: String, shopIds: List<Long>) = ctx.run {
-        createTable(table, schema)
+        createTable(table, schema, shopIds)
         setupDistributedOrReferenceTable(table, schema)
         createPartitions(table, shopIds)
         addConstraints(table, schema)
     }
 
-    private fun createTable(table: DbTable, schema: String) = ctx.run {
+    private fun createTable(table: DbTable, schema: String, shopIds: List<Long>) = ctx.run {
         logger.info { "Creating table" }
 
         val tableDefinition = table.definition(this, schema).getSQL(ParamType.INLINED).let {
@@ -57,8 +57,8 @@ class DefinitionGenerator(private val ctx: BenchmarkContext) {
                 if (column != null && table is MultiTenantTable) {
                     when (strategy.partitioning) {
                         Strategy.Partitioning.None -> it
-                        Strategy.Partitioning.List -> "$it PARTITION BY LIST ($column)"
-                        Strategy.Partitioning.Hash -> "PARTITION BY HASH (${column})"
+                        Strategy.Partitioning.List -> "$it ${database.listPartition(column, shopIds)}"
+                        Strategy.Partitioning.Hash -> "$it ${database.hashPartition(column, hashPartitionCount)}"
                     }
                 } else {
                     it
@@ -77,7 +77,7 @@ class DefinitionGenerator(private val ctx: BenchmarkContext) {
     }
 
     private fun createPartitions(table: DbTable, shopIds: List<Long>) = ctx.run {
-        if (table !is MultiTenantTable) {
+        if (table !is MultiTenantTable || !database.manualPartitionCreation()) {
             return
         }
 
