@@ -3,11 +3,11 @@ plugins {
 }
 
 dependencies {
+    implementation(project(":core"))
+    implementation(project(":definition"))
+    implementation(libs.jooq.codegen)
     implementation(libs.jooq.jooq)
-    implementation(libs.mariadb)
-    implementation(libs.mysql)
+    implementation(libs.jooq.meta)
     implementation(libs.postgres)
-    implementation(libs.testcontainers.mariadb)
-    implementation(libs.testcontainers.mysql)
     implementation(libs.testcontainers.postgres)
 }

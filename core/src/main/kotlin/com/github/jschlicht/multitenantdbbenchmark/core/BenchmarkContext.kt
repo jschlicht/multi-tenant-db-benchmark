@@ -1,18 +1,11 @@
-package com.github.jschlicht.multitenantdbbenchmark
+package com.github.jschlicht.multitenantdbbenchmark.core
 
-import com.github.jschlicht.multitenantdbbenchmark.data.DataGenerator
-import com.github.jschlicht.multitenantdbbenchmark.data.GlobalData
 import com.github.jschlicht.multitenantdbbenchmark.core.db.CitusTableType
 import com.github.jschlicht.multitenantdbbenchmark.core.db.Database
 import com.github.jschlicht.multitenantdbbenchmark.core.strategy.DistributedTable
 import com.github.jschlicht.multitenantdbbenchmark.core.strategy.Strategy
-import com.github.jschlicht.multitenantdbbenchmark.table.DbTable
-import com.github.jschlicht.multitenantdbbenchmark.table.GlobalTable
-import com.github.jschlicht.multitenantdbbenchmark.table.MultiTenantTable
-import com.github.jschlicht.multitenantdbbenchmark.table.ShopTable
-import com.github.jschlicht.multitenantdbbenchmark.util.AutoCloser
-import com.github.jschlicht.multitenantdbbenchmark.util.MdcKey
-import com.github.jschlicht.multitenantdbbenchmark.util.SqlOutputExecutionListener
+import com.github.jschlicht.multitenantdbbenchmark.core.util.AutoCloser
+import com.github.jschlicht.multitenantdbbenchmark.core.util.SqlOutputExecutionListener
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.github.oshai.kotlinlogging.withLoggingContext
 import org.jooq.DSLContext
@@ -35,10 +28,6 @@ data class BenchmarkContext(
     val verbose: Boolean
 ) : AutoCloseable {
     private val closer = AutoCloser()
-
-    private val globalTables = listOf<GlobalTable>(
-        ShopTable
-    )
 
     val container: JdbcDatabaseContainer<*>
     val connection: Connection
@@ -87,59 +76,7 @@ data class BenchmarkContext(
         }
     }
 
-    fun run() {
-        logger.info { "Running initial database setup" }
-        database.setup(dsl)
 
-        logger.info { "Generating data" }
-        val dataGenerator = DataGenerator()
-        val globalData = dataGenerator.globalData()
-
-        val defaultSchema = database.defaultSchema
-
-        globalTables.forEach { table ->
-            withLoggingContext(MdcKey.table to table.name) {
-                createTable(table, database.defaultSchema)
-                setupDistributedOrReferenceTable(table, defaultSchema)
-                insertGlobalData(table, defaultSchema, globalData)
-            }
-        }
-    }
-
-    private fun createTable(table: DbTable, schema: String) {
-        logger.info { "Creating table" }
-
-        dsl.execute(table.definition(this, schema))
-    }
-
-    private fun insertGlobalData(table: DbTable, schema: String, globalData: GlobalData) {
-        logger.info { "Populating table" }
-
-        table.globalData(this, schema, globalData)?.let {
-            dsl.execute(it)
-        }
-    }
-
-    private fun setupDistributedOrReferenceTable(table: DbTable, schema: String) {
-        if (strategy !is DistributedTable) {
-            return
-        }
-
-        val tableName = database.qualify(schema, table.name).unquotedName().toString()
-
-        when (table.citusTableType) {
-            CitusTableType.Distributed -> {
-                table.distributionColumn?.let { distributionColumn ->
-                    logger.info { "Creating distributed table" }
-                    dsl.execute("SELECT create_distributed_table(?, ?)", tableName, distributionColumn)
-                }
-            }
-            CitusTableType.Reference -> {
-                logger.info { "Creating reference table" }
-                dsl.execute("SELECT create_reference_table(?)", tableName)
-            }
-        }
-    }
 
     override fun close() {
         closer.close()

@@ -12,6 +12,7 @@ version = "1.0-SNAPSHOT"
 
 dependencies {
     implementation(project(":core"))
+    implementation(project(":definition"))
     implementation(libs.clikt)
     implementation(libs.faker)
     implementation(libs.jooq.jooq)

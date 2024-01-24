@@ -1,7 +1,6 @@
-package com.github.jschlicht.multitenantdbbenchmark.table
+package com.github.jschlicht.multitenantdbbenchmark.definition
 
-import com.github.jschlicht.multitenantdbbenchmark.BenchmarkContext
-import com.github.jschlicht.multitenantdbbenchmark.data.GlobalData
+import com.github.jschlicht.multitenantdbbenchmark.core.BenchmarkContext
 import com.github.jschlicht.multitenantdbbenchmark.core.db.CitusTableType
 import org.jooq.Query
 
@@ -11,7 +10,6 @@ interface DbTable {
     val citusTableType: CitusTableType
     val name: String
     fun definition(ctx: BenchmarkContext, schema: String): Query
-    fun globalData(ctx: BenchmarkContext, schema: String, globalData: GlobalData): Query?
 }
 
 interface GlobalTable : DbTable {
@@ -25,8 +23,4 @@ interface MultiTenantTable : DbTable {
 
     override val citusTableType: CitusTableType
         get() = CitusTableType.Distributed
-
-    override fun globalData(ctx: BenchmarkContext, schema: String, globalData: GlobalData): Query? {
-        return null
-    }
 }

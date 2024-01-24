@@ -1,4 +1,4 @@
-package com.github.jschlicht.multitenantdbbenchmark.util
+package com.github.jschlicht.multitenantdbbenchmark.core.util
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.jooq.ExecuteContext
