@@ -3,6 +3,7 @@ package com.github.jschlicht.multitenantdbbenchmark
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.options.*
 import com.github.ajalt.clikt.parameters.types.choice
+import com.github.ajalt.clikt.parameters.types.int
 import com.github.ajalt.clikt.parameters.types.path
 import com.github.jschlicht.multitenantdbbenchmark.core.BenchmarkContext
 import com.github.jschlicht.multitenantdbbenchmark.core.db.*
@@ -23,6 +24,11 @@ class Benchmark : CliktCommand() {
 
     val output by option("--output", "-o", help = "Output generated .sql files to this folder")
         .path(canBeFile = false, canBeDir = true, mustExist = false, mustBeWritable = true)
+
+    val hashPartitionCount by option("--partitions", "-p", help = "Number of partitions to use for hash partitioning")
+        .int()
+        .default(64)
+        .check("must be greater than 0") { it > 0 }
 
     val strategies by option("--strategies", "-s", help = "Select which multi-tenant strategies to benchmark")
         .choice(strategyChoices)
@@ -46,7 +52,13 @@ class Benchmark : CliktCommand() {
             if (database.supports(strategy)) {
                 logger.info { "Running benchmark" }
 
-                BenchmarkContext(database, strategy, output, verbose).use {
+                BenchmarkContext(
+                    database = database,
+                    strategy = strategy,
+                    outputPath = output,
+                    verbose = verbose,
+                    hashPartitionCount = hashPartitionCount
+                ).use {
                     BenchmarkRunner(it).run()
                 }
             } else {

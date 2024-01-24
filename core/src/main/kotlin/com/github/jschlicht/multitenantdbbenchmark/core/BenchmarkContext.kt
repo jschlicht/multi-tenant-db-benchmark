@@ -1,16 +1,13 @@
 package com.github.jschlicht.multitenantdbbenchmark.core
 
-import com.github.jschlicht.multitenantdbbenchmark.core.db.CitusTableType
 import com.github.jschlicht.multitenantdbbenchmark.core.db.Database
-import com.github.jschlicht.multitenantdbbenchmark.core.db.Postgres
-import com.github.jschlicht.multitenantdbbenchmark.core.strategy.DistributedTable
 import com.github.jschlicht.multitenantdbbenchmark.core.strategy.Strategy
 import com.github.jschlicht.multitenantdbbenchmark.core.util.AutoCloser
 import com.github.jschlicht.multitenantdbbenchmark.core.util.SqlOutputExecutionListener
 import io.github.oshai.kotlinlogging.KotlinLogging
-import io.github.oshai.kotlinlogging.withLoggingContext
 import org.jooq.DSLContext
-import org.jooq.conf.*
+import org.jooq.conf.RenderKeywordCase
+import org.jooq.conf.RenderQuotedNames
 import org.jooq.impl.DSL
 import org.jooq.impl.DefaultConfiguration
 import org.testcontainers.containers.JdbcDatabaseContainer
@@ -25,7 +22,8 @@ data class BenchmarkContext(
     val database: Database,
     val strategy: Strategy,
     val outputPath: Path?,
-    val verbose: Boolean
+    val verbose: Boolean,
+    val hashPartitionCount: Int
 ) : AutoCloseable {
     private val closer = AutoCloser()
 
