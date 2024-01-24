@@ -26,6 +26,10 @@ class JooqGenerator {
                     database = Database().apply {
                         name = PostgresDatabase::class.qualifiedName
                         inputSchema = "public"
+
+                        excludes = listOf("citext.*","max", "min", "regexp.*", "replace", "split_part", "strpos",
+                            "textic.*", "translate"
+                        ).joinToString(separator = " | ")
                     }
 
                     generate = Generate().apply {

@@ -18,8 +18,6 @@ sealed class Database(val key: String, val dialect: SQLDialect, val defaultSchem
         }
     }
 
-    abstract val caseInsensitiveType: DataType<String>
-
     open fun setup(dsl: DSLContext) {
     }
 
