@@ -4,9 +4,10 @@ import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.options.*
 import com.github.ajalt.clikt.parameters.types.choice
 import com.github.ajalt.clikt.parameters.types.path
-import com.github.jschlicht.multitenantdbbenchmark.db.*
-import com.github.jschlicht.multitenantdbbenchmark.strategy.*
-import com.github.jschlicht.multitenantdbbenchmark.util.MdcKey
+import com.github.jschlicht.multitenantdbbenchmark.core.BenchmarkContext
+import com.github.jschlicht.multitenantdbbenchmark.core.db.*
+import com.github.jschlicht.multitenantdbbenchmark.core.strategy.*
+import com.github.jschlicht.multitenantdbbenchmark.core.util.MdcKey
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.github.oshai.kotlinlogging.withLoggingContext
 import java.util.*
@@ -46,7 +47,7 @@ class Benchmark : CliktCommand() {
                 logger.info { "Running benchmark" }
 
                 BenchmarkContext(database, strategy, output, verbose).use {
-                    it.run()
+                    BenchmarkRunner(it).run()
                 }
             } else {
                 logger.info { "Skipping benchmark" }
