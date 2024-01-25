@@ -30,7 +30,8 @@ class BenchmarkRunner(private val ctx: BenchmarkContext) {
     }
 
     companion object {
-        val databases = listOf(MariaDB, MySQL, Postgres, Citus)
+        val defaultDatabases = listOf(MariaDB, Postgres, Citus)
+        val databases = defaultDatabases + MySQL
         val strategies = listOf(
             Normalized,
             TenantIdSimple,

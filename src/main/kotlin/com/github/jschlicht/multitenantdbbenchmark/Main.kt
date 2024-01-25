@@ -20,9 +20,9 @@ private const val DEFAULT_TENANT_COUNT = 1000
 
 class Benchmark : CliktCommand() {
     val databases by option("--databases", "-d", help = "Select which databases to benchmark")
-        .choice(databaseChoices)
+        .choice(databaseChoicesByKey)
         .split(",")
-        .defaultLazy { databaseChoices.values.toList() }
+        .defaultLazy { BenchmarkRunner.defaultDatabases }
         .check("at least one database must be selected") { it.isNotEmpty() }
 
     val output by option("--output", "-o", help = "Output generated .sql files to this folder")
@@ -34,9 +34,9 @@ class Benchmark : CliktCommand() {
         .check("must be greater than 0") { it > 0 }
 
     val strategies by option("--strategies", "-s", help = "Select which multi-tenant strategies to benchmark")
-        .choice(strategyChoices)
+        .choice(strategyChoicesByKey)
         .split(",")
-        .defaultLazy { strategyChoices.values.toList() }
+        .defaultLazy { strategyChoicesByKey.values.toList() }
         .check("at least one strategy must be selected") { it.isNotEmpty() }
 
     val tenants by option("--tenants", "-t", help = "Number of tenants to generate")
@@ -77,8 +77,8 @@ class Benchmark : CliktCommand() {
     }
 
     companion object {
-        val databaseChoices = BenchmarkRunner.databases.associateBy { it.key }
-        val strategyChoices = BenchmarkRunner.strategies.associateBy { it.key }
+        val databaseChoicesByKey = BenchmarkRunner.databases.associateBy { it.key }
+        val strategyChoicesByKey = BenchmarkRunner.strategies.associateBy { it.key }
     }
 }
 

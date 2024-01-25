@@ -27,7 +27,7 @@ class BenchmarkRunnerTest {
         @JvmStatic
         @Suppress("detekt:UnusedPrivateMember")
         private fun arguments(): List<Arguments> {
-            return BenchmarkRunner.databases.flatMap { database ->
+            return BenchmarkRunner.defaultDatabases.flatMap { database ->
                 BenchmarkRunner.strategies.mapNotNull { strategy ->
                     Arguments.of(database, strategy)
                         .takeIf { database.supports(strategy) }
