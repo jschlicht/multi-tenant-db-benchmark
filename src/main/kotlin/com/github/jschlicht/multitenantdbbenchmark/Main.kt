@@ -15,13 +15,14 @@ import java.util.*
 
 private val logger = KotlinLogging.logger {}
 
-private const val defaultHashPartitionCount = 64
+private const val DEFAULT_HASH_PARTITION_COUNT = 64
+private const val DEFAULT_TENANT_COUNT = 1000
 
 class Benchmark : CliktCommand() {
     val databases by option("--databases", "-d", help = "Select which databases to benchmark")
-        .choice(databaseChoices)
+        .choice(databaseChoicesByKey)
         .split(",")
-        .defaultLazy { databaseChoices.values.toList() }
+        .defaultLazy { BenchmarkRunner.defaultDatabases }
         .check("at least one database must be selected") { it.isNotEmpty() }
 
     val output by option("--output", "-o", help = "Output generated .sql files to this folder")
@@ -29,14 +30,19 @@ class Benchmark : CliktCommand() {
 
     val hashPartitionCount by option("--partitions", "-p", help = "Number of partitions to use for hash partitioning")
         .int()
-        .default(defaultHashPartitionCount)
+        .default(DEFAULT_HASH_PARTITION_COUNT)
         .check("must be greater than 0") { it > 0 }
 
     val strategies by option("--strategies", "-s", help = "Select which multi-tenant strategies to benchmark")
-        .choice(strategyChoices)
+        .choice(strategyChoicesByKey)
         .split(",")
-        .defaultLazy { strategyChoices.values.toList() }
+        .defaultLazy { strategyChoicesByKey.values.toList() }
         .check("at least one strategy must be selected") { it.isNotEmpty() }
+
+    val tenants by option("--tenants", "-t", help = "Number of tenants to generate")
+        .int()
+        .default(DEFAULT_TENANT_COUNT)
+        .check("must be greater than 0") { it > 0 }
 
     val verbose by option("--verbose", "-v", help = "Print generated SQL to stdout")
         .flag(default = false)
@@ -59,7 +65,8 @@ class Benchmark : CliktCommand() {
                     strategy = strategy,
                     outputPath = output,
                     verbose = verbose,
-                    hashPartitionCount = hashPartitionCount
+                    hashPartitionCount = hashPartitionCount,
+                    tenantCount = tenants
                 ).use {
                     BenchmarkRunner(it).run()
                 }
@@ -70,16 +77,8 @@ class Benchmark : CliktCommand() {
     }
 
     companion object {
-        private val databaseChoices = listOf(MariaDB, MySQL, Postgres, Citus).associateBy { it.key }
-        private val strategyChoices = listOf(
-            Normalized,
-            TenantIdSimple,
-            TenantIdComposite,
-            PartitionHash,
-            PartitionList,
-            Namespace,
-            DistributedTable
-        ).associateBy { it.key }
+        val databaseChoicesByKey = BenchmarkRunner.databases.associateBy { it.key }
+        val strategyChoicesByKey = BenchmarkRunner.strategies.associateBy { it.key }
     }
 }
 

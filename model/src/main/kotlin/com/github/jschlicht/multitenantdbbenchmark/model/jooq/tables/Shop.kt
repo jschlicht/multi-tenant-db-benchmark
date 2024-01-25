@@ -5,7 +5,9 @@ package com.github.jschlicht.multitenantdbbenchmark.model.jooq.tables
 
 
 import com.github.jschlicht.multitenantdbbenchmark.model.jooq.Public
+import com.github.jschlicht.multitenantdbbenchmark.model.jooq.keys.CUSTOMER__FK_CUSTOMER_SHOP
 import com.github.jschlicht.multitenantdbbenchmark.model.jooq.keys.SHOP_PKEY
+import com.github.jschlicht.multitenantdbbenchmark.model.jooq.tables.Customer.CustomerPath
 import com.github.jschlicht.multitenantdbbenchmark.model.jooq.tables.records.ShopRecord
 
 import java.time.LocalDateTime
@@ -18,6 +20,7 @@ import org.jooq.ForeignKey
 import org.jooq.Identity
 import org.jooq.InverseForeignKey
 import org.jooq.Name
+import org.jooq.Path
 import org.jooq.PlainSQL
 import org.jooq.QueryPart
 import org.jooq.Record
@@ -30,6 +33,7 @@ import org.jooq.TableField
 import org.jooq.TableOptions
 import org.jooq.UniqueKey
 import org.jooq.impl.DSL
+import org.jooq.impl.Internal
 import org.jooq.impl.SQLDataType
 import org.jooq.impl.TableImpl
 
@@ -174,9 +178,38 @@ open class Shop(
      * Create a <code>public.shop</code> table reference
      */
     constructor(): this(DSL.name("shop"), null)
+
+    constructor(path: Table<out Record>, childPath: ForeignKey<out Record, ShopRecord>?, parentPath: InverseForeignKey<out Record, ShopRecord>?): this(Internal.createPathAlias(path, childPath, parentPath), path, childPath, parentPath, SHOP, null, null)
+
+    /**
+     * A subtype implementing {@link Path} for simplified path-based joins.
+     */
+    open class ShopPath : Shop, Path<ShopRecord> {
+        constructor(path: Table<out Record>, childPath: ForeignKey<out Record, ShopRecord>?, parentPath: InverseForeignKey<out Record, ShopRecord>?): super(path, childPath, parentPath)
+        private constructor(alias: Name, aliased: Table<ShopRecord>): super(alias, aliased)
+        override fun `as`(alias: String): ShopPath = ShopPath(DSL.name(alias), this)
+        override fun `as`(alias: Name): ShopPath = ShopPath(alias, this)
+        override fun `as`(alias: Table<*>): ShopPath = ShopPath(alias.qualifiedName, this)
+    }
     override fun getSchema(): Schema? = if (aliased()) null else Public.PUBLIC
     override fun getIdentity(): Identity<ShopRecord, Long?> = super.getIdentity() as Identity<ShopRecord, Long?>
     override fun getPrimaryKey(): UniqueKey<ShopRecord> = SHOP_PKEY
+
+    private lateinit var _customer: CustomerPath
+
+    /**
+     * Get the implicit to-many join path to the <code>public.customer</code>
+     * table
+     */
+    fun customer(): CustomerPath {
+        if (!this::_customer.isInitialized)
+            _customer = CustomerPath(this, null, CUSTOMER__FK_CUSTOMER_SHOP.inverseKey)
+
+        return _customer;
+    }
+
+    val customer: CustomerPath
+        get(): CustomerPath = customer()
     override fun getRecordTimestamp(): TableField<ShopRecord, LocalDateTime?> = UPDATED_AT
     override fun `as`(alias: String): Shop = Shop(DSL.name(alias), this)
     override fun `as`(alias: Name): Shop = Shop(alias, this)

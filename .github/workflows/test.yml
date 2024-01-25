@@ -1,0 +1,31 @@
+name: Tests
+on: [push]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
+        with:
+          gradle-version: wrapper
+
+      - name: Run detekt
+        run: ./gradlew detektMain detektTest
+
+      - name: Run tests
+        run: ./gradlew test
+
+      - name: Verify no changed files
+        uses: tj-actions/verify-changed-files@v17
+        id: verify-changed-files
+        with:
+          fail-if-changed: 'true'
+          fail-message: 'Files have changed. Please run jooq before committing.'

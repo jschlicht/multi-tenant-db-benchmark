@@ -6,7 +6,6 @@ import com.github.jschlicht.multitenantdbbenchmark.core.util.JooqExtensions.opti
 import org.jooq.Query
 import org.jooq.impl.DSL
 import org.jooq.impl.DSL.*
-import org.jooq.impl.Internal
 import org.jooq.impl.SQLDataType
 
 object CustomerTable : MultiTenantTable {
@@ -33,7 +32,7 @@ object CustomerTable : MultiTenantTable {
                     .foreignKey("shop_id")
                     .references(name("shop"), name("id"))
                     .onDeleteCascade()
-            ).takeIf { database.supportsForeignKeysWith(strategy) }
+            ).takeIf { database.supportsGlobalTableForeignKeysWith(strategy) }
         )
     }
 }

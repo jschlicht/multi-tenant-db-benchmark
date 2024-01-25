@@ -12,7 +12,7 @@ object JooqExtensions {
     fun CreateTableElementListStep.multiTenantPrimaryKey(
         strategy: Strategy,
         column: String = "id"
-    ) : CreateTableElementListStep {
+    ): CreateTableElementListStep {
         return if (strategy.simpleKeys) {
             primaryKey(column)
         } else {
@@ -20,7 +20,7 @@ object JooqExtensions {
         }
     }
 
-    fun CreateTableElementListStep.optionalIdIndex(database: Database, strategy: Strategy, schema: String, table: String) : CreateTableElementListStep {
+    fun CreateTableElementListStep.optionalIdIndex(database: Database, strategy: Strategy, schema: String, table: String): CreateTableElementListStep {
         if (!database.requiresSeparateIndexOnId(strategy)) {
             return this
         }
@@ -29,7 +29,7 @@ object JooqExtensions {
         return index(Internal.createIndex(indexName, table(table), arrayOf(field("id")), false))
     }
 
-    fun CreateTableElementListStep.optionalDenormalizedTenantId(strategy: Strategy) : CreateTableElementListStep {
+    fun CreateTableElementListStep.optionalDenormalizedTenantId(strategy: Strategy): CreateTableElementListStep {
         return if (strategy.denormalizedTenantId) {
             column("shop_id", SQLDataType.BIGINT.notNull())
         } else {

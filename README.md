@@ -53,7 +53,7 @@ Uses Citus's create_distributed_table on a [single database node](https://www.ci
 ### Tested Databases:
 * Citus 12.1 (PostgreSQL 16.1)
 * PostgreSQL 16.1
-* MySQL 8.2
+* ~~MySQL 8.2~~ (Times out on Github Actions. Off by default and not tested)
 * MariaDB 11.3
 
 ## Getting Started

@@ -6,6 +6,15 @@ import org.jooq.SQLDialect
 abstract class MySQLBase(key: String, dialect: SQLDialect, defaultSchema: String) :
     Database(key, dialect, defaultSchema) {
 
+    override val overrideUsername: String? = "root"
+
+    override fun supportsGlobalTableForeignKeysWith(strategy: Strategy): Boolean {
+        return supportsForeignKeysWith(strategy) && when (strategy) {
+            Namespace -> false // can't foreign key across databases
+            else -> true
+        }
+    }
+
     override fun supportsForeignKeysWith(strategy: Strategy): Boolean {
         return when (strategy) {
             PartitionHash,
@@ -16,9 +25,13 @@ abstract class MySQLBase(key: String, dialect: SQLDialect, defaultSchema: String
 
     override fun requiresSeparateIndexOnId(strategy: Strategy): Boolean {
         return when (strategy) {
-            PartitionHash,
+            DistributedTable -> false
+            Namespace -> false
+            Normalized -> false
+            PartitionHash -> true
             PartitionList -> true
-            else -> false
+            TenantIdComposite -> true
+            TenantIdSimple -> false
         }
     }
 
@@ -27,7 +40,7 @@ abstract class MySQLBase(key: String, dialect: SQLDialect, defaultSchema: String
     }
 
     override fun hashPartition(column: String, partitionCount: Int): String {
-        return "PARTITION BY HASH (${column}) PARTITIONS $partitionCount"
+        return "PARTITION BY HASH ($column) PARTITIONS $partitionCount"
     }
 
     override fun listPartition(column: String, ids: List<Long>): String {

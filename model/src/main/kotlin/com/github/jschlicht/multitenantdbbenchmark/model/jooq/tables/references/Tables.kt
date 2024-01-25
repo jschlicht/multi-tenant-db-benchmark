@@ -4,9 +4,15 @@
 package com.github.jschlicht.multitenantdbbenchmark.model.jooq.tables.references
 
 
+import com.github.jschlicht.multitenantdbbenchmark.model.jooq.tables.Customer
 import com.github.jschlicht.multitenantdbbenchmark.model.jooq.tables.Shop
 
 
+
+/**
+ * The table <code>public.customer</code>.
+ */
+val CUSTOMER: Customer = Customer.CUSTOMER
 
 /**
  * The table <code>public.shop</code>.

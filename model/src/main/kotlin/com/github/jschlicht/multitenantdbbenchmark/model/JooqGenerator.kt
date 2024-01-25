@@ -9,53 +9,92 @@ import org.jooq.codegen.KotlinGenerator
 import org.jooq.meta.jaxb.*
 import org.jooq.meta.jaxb.Target
 import org.jooq.meta.postgres.PostgresDatabase
+import kotlin.io.path.Path
+import kotlin.io.path.exists
 
 class JooqGenerator {
     fun run() {
-        BenchmarkContext(database = Postgres, strategy = TenantIdComposite, outputPath = null, verbose = false, hashPartitionCount = 0).use {
-            DefinitionGenerator(it).run(shopIds = listOf())
+        BenchmarkContext(
+            database = Postgres,
+            strategy = TenantIdComposite,
+            outputPath = null,
+            verbose = false,
+            hashPartitionCount = 0,
+            tenantCount = 0
+        ).use { ctx ->
+            DefinitionGenerator(ctx).run(shopIds = listOf())
+            GenerationTool.generate(configuration(ctx))
+        }
+    }
 
-            Configuration().apply {
-                onUnused = OnError.FAIL
+    private fun configuration(ctx: BenchmarkContext): Configuration {
+        return Configuration().apply {
+            onUnused = OnError.FAIL
+            jdbc = jdbc(ctx)
+            generator = generator()
+        }
+    }
 
-                jdbc = Jdbc().apply {
-                    driver = org.postgresql.Driver::class.qualifiedName
-                    url = it.container.jdbcUrl
-                    user = it.container.username
-                    password = it.container.password
-                }
+    private fun jdbc(ctx: BenchmarkContext): Jdbc {
+        return Jdbc().apply {
+            driver = org.postgresql.Driver::class.qualifiedName
+            url = ctx.container.jdbcUrl
+            user = ctx.container.username
+            password = ctx.container.password
+        }
+    }
 
-                generator = Generator().apply {
-                    name = KotlinGenerator::class.qualifiedName
+    private fun generator(): Generator {
+        return Generator().apply {
+            name = KotlinGenerator::class.qualifiedName
+            database = database()
+            generate = generate()
+            target = target()
+        }
+    }
 
-                    database = Database().apply {
-                        name = PostgresDatabase::class.qualifiedName
-                        inputSchema = "public"
+    private fun database(): Database {
+        return Database().apply {
+            name = PostgresDatabase::class.qualifiedName
+            inputSchema = "public"
 
-                        recordTimestampFields = "updated_at"
+            recordTimestampFields = "updated_at"
 
-                        excludes = listOf("citext.*","max", "min", "regexp.*", "replace", "split_part", "strpos",
-                            "textic.*", "translate"
-                        ).joinToString(separator = " | ")
-                    }
+            excludes = listOf(
+                "citext.*", "max", "min", "regexp.*", "replace", "split_part", "strpos",
+                "textic.*", "translate"
+            ).joinToString(separator = " | ")
+        }
+    }
 
-                    generate = Generate().apply {
-                        isKotlinNotNullPojoAttributes = true
-                        isPojos = true
-                        isPojosEqualsAndHashCode = false
-                        isPojosToString = false
-                        isPojosAsKotlinDataClasses = true
-                        isRelations = false
-                    }
+    private fun generate(): Generate {
+        return Generate().apply {
+            isKotlinNotNullPojoAttributes = true
+            isPojos = true
+            isPojosEqualsAndHashCode = false
+            isPojosToString = false
+            isPojosAsKotlinDataClasses = true
+            isRelations = false
+        }
+    }
 
-                    target = Target().apply {
-                        packageName = "com.github.jschlicht.multitenantdbbenchmark.model.jooq"
-                        directory = "model/src/main/kotlin"
-                    }
-                }
+    private fun target(): Target {
+        /* Ensure files are outputted to the correct directory regardless of whether the current working directory is
+         * the project root (running from IDEA) or the model module (running tests).
+         */
+        val basePath = if (Path(".", "gradlew").exists()) {
+            Path("model")
+        } else if (Path("..", "gradlew").exists()) {
+            Path(".")
+        } else {
+            error(("Unable to determine project root directory"))
+        }
 
-                GenerationTool.generate(this)
-            }
+        val targetPath = basePath.resolve("src").resolve("main").resolve("kotlin")
+
+        return Target().apply {
+            packageName = "com.github.jschlicht.multitenantdbbenchmark.model.jooq"
+            directory = targetPath.toString()
         }
     }
 

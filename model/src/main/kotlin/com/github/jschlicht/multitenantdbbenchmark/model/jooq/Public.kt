@@ -4,6 +4,7 @@
 package com.github.jschlicht.multitenantdbbenchmark.model.jooq
 
 
+import com.github.jschlicht.multitenantdbbenchmark.model.jooq.tables.Customer
 import com.github.jschlicht.multitenantdbbenchmark.model.jooq.tables.Shop
 
 import kotlin.collections.List
@@ -27,6 +28,11 @@ open class Public : SchemaImpl("public", DefaultCatalog.DEFAULT_CATALOG) {
     }
 
     /**
+     * The table <code>public.customer</code>.
+     */
+    val CUSTOMER: Customer get() = Customer.CUSTOMER
+
+    /**
      * The table <code>public.shop</code>.
      */
     val SHOP: Shop get() = Shop.SHOP
@@ -34,6 +40,7 @@ open class Public : SchemaImpl("public", DefaultCatalog.DEFAULT_CATALOG) {
     override fun getCatalog(): Catalog = DefaultCatalog.DEFAULT_CATALOG
 
     override fun getTables(): List<Table<*>> = listOf(
+        Customer.CUSTOMER,
         Shop.SHOP
     )
 }
