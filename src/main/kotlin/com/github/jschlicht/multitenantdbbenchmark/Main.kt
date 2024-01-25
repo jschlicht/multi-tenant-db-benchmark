@@ -16,6 +16,7 @@ import java.util.*
 private val logger = KotlinLogging.logger {}
 
 private const val defaultHashPartitionCount = 64
+private const val defaultTenantCount = 1000
 
 class Benchmark : CliktCommand() {
     val databases by option("--databases", "-d", help = "Select which databases to benchmark")
@@ -38,6 +39,11 @@ class Benchmark : CliktCommand() {
         .defaultLazy { strategyChoices.values.toList() }
         .check("at least one strategy must be selected") { it.isNotEmpty() }
 
+    val tenants by option("--tenants", "-t", help = "Number of tenants to generate")
+        .int()
+        .default(defaultTenantCount)
+        .check("must be greater than 0") { it > 0 }
+
     val verbose by option("--verbose", "-v", help = "Print generated SQL to stdout")
         .flag(default = false)
 
@@ -59,7 +65,8 @@ class Benchmark : CliktCommand() {
                     strategy = strategy,
                     outputPath = output,
                     verbose = verbose,
-                    hashPartitionCount = hashPartitionCount
+                    hashPartitionCount = hashPartitionCount,
+                    tenantCount = tenants
                 ).use {
                     BenchmarkRunner(it).run()
                 }
@@ -70,16 +77,8 @@ class Benchmark : CliktCommand() {
     }
 
     companion object {
-        private val databaseChoices = listOf(MariaDB, MySQL, Postgres, Citus).associateBy { it.key }
-        private val strategyChoices = listOf(
-            Normalized,
-            TenantIdSimple,
-            TenantIdComposite,
-            PartitionHash,
-            PartitionList,
-            Namespace,
-            DistributedTable
-        ).associateBy { it.key }
+        val databaseChoices = BenchmarkRunner.databases.associateBy { it.key }
+        val strategyChoices = BenchmarkRunner.strategies.associateBy { it.key }
     }
 }
 

@@ -29,7 +29,7 @@ detekt {
     allRules = false
     autoCorrect = true
     buildUponDefaultConfig = true
-    config.setFrom("$projectDir/config/detekt.yml")
+    config.setFrom("$rootDir/config/detekt.yml")
     parallel = true
 }
 

@@ -13,7 +13,7 @@ class DataGenerator {
     private val faker = Faker(Random(DETERMINISTIC_SEED))
     private var shopCounter = 0L
 
-    fun globalData(shopCount: Int = SHOP_COUNT): GlobalData {
+    fun globalData(shopCount: Int): GlobalData {
         return GlobalData(
             shops = shops(shopCount)
         )
@@ -55,6 +55,5 @@ class DataGenerator {
 
     companion object {
         private const val DETERMINISTIC_SEED = 0L
-        private const val SHOP_COUNT = 5
     }
 }

@@ -10,8 +10,10 @@ class DataGeneratorTest {
         val dataGenerator1 = DataGenerator()
         val dataGenerator2 = DataGenerator()
 
-        val globalData1 = dataGenerator1.globalData()
-        val globalData2 = dataGenerator2.globalData()
+        val shopCount = 5
+
+        val globalData1 = dataGenerator1.globalData(shopCount)
+        val globalData2 = dataGenerator2.globalData(shopCount)
 
         globalData1.shouldBe(globalData2)
     }

@@ -1,14 +1,10 @@
 package com.github.jschlicht.multitenantdbbenchmark.core
 
-import com.github.jschlicht.multitenantdbbenchmark.core.db.CitusTableType
 import com.github.jschlicht.multitenantdbbenchmark.core.db.Database
-import com.github.jschlicht.multitenantdbbenchmark.core.db.Postgres
-import com.github.jschlicht.multitenantdbbenchmark.core.strategy.DistributedTable
 import com.github.jschlicht.multitenantdbbenchmark.core.strategy.Strategy
 import com.github.jschlicht.multitenantdbbenchmark.core.util.AutoCloser
 import com.github.jschlicht.multitenantdbbenchmark.core.util.SqlOutputExecutionListener
 import io.github.oshai.kotlinlogging.KotlinLogging
-import io.github.oshai.kotlinlogging.withLoggingContext
 import org.jooq.DSLContext
 import org.jooq.conf.*
 import org.jooq.impl.DSL
@@ -26,7 +22,8 @@ data class BenchmarkContext(
     val strategy: Strategy,
     val outputPath: Path?,
     val verbose: Boolean,
-    val hashPartitionCount: Int
+    val hashPartitionCount: Int,
+    val tenantCount: Int
 ) : AutoCloseable {
     private val closer = AutoCloser()
 
@@ -43,7 +40,8 @@ data class BenchmarkContext(
             connection = closer.register(
                 DriverManager.getConnection(
                     container.jdbcUrl,
-                    container.username, container.password
+                    database.overrideUsername ?: container.username,
+                    container.password
                 )
             )
 
@@ -75,8 +73,6 @@ data class BenchmarkContext(
             throw ex
         }
     }
-
-
 
     override fun close() {
         closer.close()

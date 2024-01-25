@@ -10,7 +10,7 @@ interface DbTable {
     val citusTableType: CitusTableType
     val name: String
     fun definition(ctx: BenchmarkContext, schema: String): Query
-    fun constraints(ctx: BenchmarkContext, schema: String) : List<Query>
+    fun constraints(ctx: BenchmarkContext, schema: String): List<Query>
 }
 
 interface GlobalTable : DbTable {

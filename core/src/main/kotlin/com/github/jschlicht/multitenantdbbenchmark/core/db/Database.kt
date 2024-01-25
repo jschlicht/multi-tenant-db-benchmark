@@ -9,6 +9,8 @@ import org.jooq.impl.DSL.name
 import org.testcontainers.containers.JdbcDatabaseContainer
 
 sealed class Database(val key: String, val dialect: SQLDialect, val defaultSchema: String) {
+    open val overrideUsername: String? = null
+
     fun qualify(schema: String, table: String): Name {
         return if (schema != defaultSchema) {
             name(schema, table)
@@ -24,19 +26,23 @@ sealed class Database(val key: String, val dialect: SQLDialect, val defaultSchem
         return strategy !is DistributedTable
     }
 
-    open fun supportsForeignKeysWith(strategy: Strategy) : Boolean {
+    open fun supportsGlobalTableForeignKeysWith(strategy: Strategy): Boolean {
+        return supportsForeignKeysWith(strategy)
+    }
+
+    open fun supportsForeignKeysWith(strategy: Strategy): Boolean {
         return true
     }
 
     abstract fun createContainer(): JdbcDatabaseContainer<*>
 
-    abstract fun manualPartitionCreation() : Boolean
+    abstract fun manualPartitionCreation(): Boolean
 
-    abstract fun hashPartition(column: String, partitionCount: Int) : String
+    abstract fun hashPartition(column: String, partitionCount: Int): String
 
-    abstract fun listPartition(column: String, ids: List<Long>) : String
+    abstract fun listPartition(column: String, ids: List<Long>): String
 
-    open fun requiresSeparateIndexOnId(strategy: Strategy) : Boolean {
+    open fun requiresSeparateIndexOnId(strategy: Strategy): Boolean {
         return false
     }
 }

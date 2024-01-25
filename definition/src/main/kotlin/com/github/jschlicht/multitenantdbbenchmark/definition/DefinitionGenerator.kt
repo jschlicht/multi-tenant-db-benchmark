@@ -85,20 +85,22 @@ class DefinitionGenerator(private val ctx: BenchmarkContext) {
             PartitionHash -> {
                 logger.info { "Creating $hashPartitionCount partitions for hash-based partitioning strategy" }
                 for (i in 0..<hashPartitionCount) {
-                    dsl.execute("CREATE TABLE ${table.name}_$i PARTITION OF ${table.name} FOR VALUES WITH (MODULUS $hashPartitionCount, REMAINDER $i)")
+                    dsl.execute(
+                        "CREATE TABLE ${table.name}_$i PARTITION OF ${table.name} FOR VALUES WITH (MODULUS $hashPartitionCount, REMAINDER $i)"
+                    )
                 }
             }
             PartitionList -> {
                 logger.info { "Creating one partition per tenant for list-based partitioning strategy" }
                 shopIds.forEach { shopId ->
-                    dsl.execute("CREATE TABLE ${table.name}_${shopId} PARTITION OF ${table.name} FOR VALUES IN ($shopId)")
+                    dsl.execute("CREATE TABLE ${table.name}_$shopId PARTITION OF ${table.name} FOR VALUES IN ($shopId)")
                 }
             }
             else -> {}
         }
     }
 
-    private fun createSchemas(shopIds: List<Long>) : List<String> = ctx.run {
+    private fun createSchemas(shopIds: List<Long>): List<String> = ctx.run {
         return if (strategy.namespacePerStore) {
             logger.info { "Generating one namespace/schema per store" }
             shopIds.map { shopNamespace(it) }.onEach { schemaName ->
