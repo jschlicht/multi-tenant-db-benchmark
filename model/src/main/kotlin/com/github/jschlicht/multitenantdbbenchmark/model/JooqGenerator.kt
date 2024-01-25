@@ -10,6 +10,8 @@ import org.jooq.meta.jaxb.*
 import org.jooq.meta.jaxb.Target
 import org.jooq.meta.postgres.PostgresDatabase
 import kotlin.io.path.Path
+import kotlin.io.path.absolute
+import kotlin.io.path.absolutePathString
 import kotlin.io.path.exists
 
 class JooqGenerator {
@@ -82,13 +84,15 @@ class JooqGenerator {
         /* Ensure files are outputted to the correct directory regardless of whether the current working directory is
          * the project root (running from IDEA) or the model module (running tests).
          */
-        val targetPath = if (Path(".", "gradlew").exists()) {
+        val basePath = if (Path(".", "gradlew").exists()) {
             Path("model")
         } else if (Path("..", "gradlew").exists()) {
             Path(".")
         } else {
             error(("Unable to determine project root directory"))
-        }.resolve(Path("src", "main", "kotlin"))
+        }
+
+        val targetPath = basePath.resolve("src").resolve("main").resolve("kotlin")
 
         return Target().apply {
             packageName = "com.github.jschlicht.multitenantdbbenchmark.model.jooq"

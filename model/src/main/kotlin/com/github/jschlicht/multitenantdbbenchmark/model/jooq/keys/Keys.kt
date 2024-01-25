@@ -3,41 +3,28 @@
  */
 package com.github.jschlicht.multitenantdbbenchmark.model.jooq.keys
 
+
 import com.github.jschlicht.multitenantdbbenchmark.model.jooq.tables.Customer
 import com.github.jschlicht.multitenantdbbenchmark.model.jooq.tables.Shop
 import com.github.jschlicht.multitenantdbbenchmark.model.jooq.tables.records.CustomerRecord
 import com.github.jschlicht.multitenantdbbenchmark.model.jooq.tables.records.ShopRecord
+
 import org.jooq.ForeignKey
 import org.jooq.UniqueKey
 import org.jooq.impl.DSL
 import org.jooq.impl.Internal
 
+
+
 // -------------------------------------------------------------------------
 // UNIQUE and PRIMARY KEY definitions
 // -------------------------------------------------------------------------
 
-val CUSTOMER_PKEY: UniqueKey<CustomerRecord> = Internal.createUniqueKey(
-    Customer.CUSTOMER,
-    DSL.name("customer_pkey"),
-    arrayOf(Customer.CUSTOMER.SHOP_ID, Customer.CUSTOMER.ID),
-    true
-)
-val SHOP_PKEY: UniqueKey<ShopRecord> = Internal.createUniqueKey(
-    Shop.SHOP,
-    DSL.name("shop_pkey"),
-    arrayOf(Shop.SHOP.ID),
-    true
-)
+val CUSTOMER_PKEY: UniqueKey<CustomerRecord> = Internal.createUniqueKey(Customer.CUSTOMER, DSL.name("customer_pkey"), arrayOf(Customer.CUSTOMER.SHOP_ID, Customer.CUSTOMER.ID), true)
+val SHOP_PKEY: UniqueKey<ShopRecord> = Internal.createUniqueKey(Shop.SHOP, DSL.name("shop_pkey"), arrayOf(Shop.SHOP.ID), true)
 
 // -------------------------------------------------------------------------
 // FOREIGN KEY definitions
 // -------------------------------------------------------------------------
 
-val CUSTOMER__FK_CUSTOMER_SHOP: ForeignKey<CustomerRecord, ShopRecord> = Internal.createForeignKey(
-    Customer.CUSTOMER,
-    DSL.name("fk_customer_shop"),
-    arrayOf(Customer.CUSTOMER.SHOP_ID),
-    com.github.jschlicht.multitenantdbbenchmark.model.jooq.keys.SHOP_PKEY,
-    arrayOf(Shop.SHOP.ID),
-    true
-)
+val CUSTOMER__FK_CUSTOMER_SHOP: ForeignKey<CustomerRecord, ShopRecord> = Internal.createForeignKey(Customer.CUSTOMER, DSL.name("fk_customer_shop"), arrayOf(Customer.CUSTOMER.SHOP_ID), com.github.jschlicht.multitenantdbbenchmark.model.jooq.keys.SHOP_PKEY, arrayOf(Shop.SHOP.ID), true)
