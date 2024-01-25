@@ -10,8 +10,6 @@ import org.jooq.meta.jaxb.*
 import org.jooq.meta.jaxb.Target
 import org.jooq.meta.postgres.PostgresDatabase
 import kotlin.io.path.Path
-import kotlin.io.path.absolute
-import kotlin.io.path.absolutePathString
 import kotlin.io.path.exists
 
 class JooqGenerator {
