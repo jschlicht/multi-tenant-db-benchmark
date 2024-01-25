@@ -15,53 +15,71 @@ class JooqGenerator {
         BenchmarkContext(
             database = Postgres,
             strategy = TenantIdComposite,
-            outputPath = null, verbose = false,
+            outputPath = null,
+            verbose = false,
             hashPartitionCount = 0,
             tenantCount = 0
-        ).use {
-            DefinitionGenerator(it).run(shopIds = listOf())
+        ).use { ctx ->
+            DefinitionGenerator(ctx).run(shopIds = listOf())
+            GenerationTool.generate(configuration(ctx))
+        }
+    }
 
-            Configuration().apply {
-                onUnused = OnError.FAIL
+    private fun configuration(ctx: BenchmarkContext): Configuration {
+        return Configuration().apply {
+            onUnused = OnError.FAIL
+            jdbc = jdbc(ctx)
+            generator = generator()
+        }
+    }
 
-                jdbc = Jdbc().apply {
-                    driver = org.postgresql.Driver::class.qualifiedName
-                    url = it.container.jdbcUrl
-                    user = it.container.username
-                    password = it.container.password
-                }
+    private fun jdbc(ctx: BenchmarkContext): Jdbc {
+        return Jdbc().apply {
+            driver = org.postgresql.Driver::class.qualifiedName
+            url = ctx.container.jdbcUrl
+            user = ctx.container.username
+            password = ctx.container.password
+        }
+    }
 
-                generator = Generator().apply {
-                    name = KotlinGenerator::class.qualifiedName
+    private fun generator(): Generator {
+        return Generator().apply {
+            name = KotlinGenerator::class.qualifiedName
+            database = database()
+            generate = generate()
+            target = target()
+        }
+    }
 
-                    database = Database().apply {
-                        name = PostgresDatabase::class.qualifiedName
-                        inputSchema = "public"
+    private fun database(): Database {
+        return Database().apply {
+            name = PostgresDatabase::class.qualifiedName
+            inputSchema = "public"
 
-                        recordTimestampFields = "updated_at"
+            recordTimestampFields = "updated_at"
 
-                        excludes = listOf("citext.*","max", "min", "regexp.*", "replace", "split_part", "strpos",
-                            "textic.*", "translate"
-                        ).joinToString(separator = " | ")
-                    }
+            excludes = listOf(
+                "citext.*", "max", "min", "regexp.*", "replace", "split_part", "strpos",
+                "textic.*", "translate"
+            ).joinToString(separator = " | ")
+        }
+    }
 
-                    generate = Generate().apply {
-                        isKotlinNotNullPojoAttributes = true
-                        isPojos = true
-                        isPojosEqualsAndHashCode = false
-                        isPojosToString = false
-                        isPojosAsKotlinDataClasses = true
-                        isRelations = false
-                    }
+    private fun generate(): Generate {
+        return Generate().apply {
+            isKotlinNotNullPojoAttributes = true
+            isPojos = true
+            isPojosEqualsAndHashCode = false
+            isPojosToString = false
+            isPojosAsKotlinDataClasses = true
+            isRelations = false
+        }
+    }
 
-                    target = Target().apply {
-                        packageName = "com.github.jschlicht.multitenantdbbenchmark.model.jooq"
-                        directory = "model/src/main/kotlin"
-                    }
-                }
-
-                GenerationTool.generate(this)
-            }
+    private fun target(): Target {
+        return Target().apply {
+            packageName = "com.github.jschlicht.multitenantdbbenchmark.model.jooq"
+            directory = "model/src/main/kotlin"
         }
     }
 

@@ -1,5 +1,5 @@
 [versions]
-jdk = "17"
+jdk = "17" # keep in sync with .github/workflows/test.yml
 jooq = "3.19.1"
 junit = "5.8.2"
 kotlin = "1.9.22"

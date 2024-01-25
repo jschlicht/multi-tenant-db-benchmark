@@ -1,6 +1,5 @@
 package com.github.jschlicht.multitenantdbbenchmark.data
 
-import com.github.jschlicht.multitenantdbbenchmark.data.DataGenerator
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Test
 

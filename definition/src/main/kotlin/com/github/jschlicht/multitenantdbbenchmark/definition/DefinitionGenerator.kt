@@ -52,21 +52,24 @@ class DefinitionGenerator(private val ctx: BenchmarkContext) {
     private fun createTable(table: DbTable, schema: String, shopIds: List<Long>) = ctx.run {
         logger.info { "Creating table" }
 
-        val tableDefinition = table.definition(this, schema).getSQL(ParamType.INLINED).let {
-            table.distributionColumn.let { column ->
-                if (column != null && table is MultiTenantTable) {
-                    when (strategy.partitioning) {
-                        Strategy.Partitioning.None -> it
-                        Strategy.Partitioning.List -> "$it ${database.listPartition(column, shopIds)}"
-                        Strategy.Partitioning.Hash -> "$it ${database.hashPartition(column, hashPartitionCount)}"
-                    }
-                } else {
-                    it
-                }
+        val originalDefinition = table.definition(this, schema).getSQL(ParamType.INLINED)
+
+        val column = table.distributionColumn
+
+        val newDefinition = if (column != null && table is MultiTenantTable) {
+            when (strategy.partitioning) {
+                Strategy.Partitioning.None -> originalDefinition
+                Strategy.Partitioning.List -> "$originalDefinition ${database.listPartition(column, shopIds)}"
+                Strategy.Partitioning.Hash -> "$originalDefinition ${database.hashPartition(
+                    column,
+                    hashPartitionCount
+                )}"
             }
+        } else {
+            originalDefinition
         }
 
-        dsl.execute(tableDefinition)
+        dsl.execute(newDefinition)
     }
 
     private fun addConstraints(table: DbTable, schema: String) = ctx.run {

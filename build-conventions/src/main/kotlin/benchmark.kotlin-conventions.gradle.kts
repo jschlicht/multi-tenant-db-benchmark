@@ -42,6 +42,8 @@ tasks.withType<Detekt>().configureEach {
         sarif.required.set(true)
         md.required.set(true)
     }
+
+    exclude("**/model/jooq/**")
 }
 
 tasks.withType<Detekt>().configureEach {

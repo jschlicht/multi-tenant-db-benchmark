@@ -15,8 +15,8 @@ import java.util.*
 
 private val logger = KotlinLogging.logger {}
 
-private const val defaultHashPartitionCount = 64
-private const val defaultTenantCount = 1000
+private const val DEFAULT_HASH_PARTITION_COUNT = 64
+private const val DEFAULT_TENANT_COUNT = 1000
 
 class Benchmark : CliktCommand() {
     val databases by option("--databases", "-d", help = "Select which databases to benchmark")
@@ -30,7 +30,7 @@ class Benchmark : CliktCommand() {
 
     val hashPartitionCount by option("--partitions", "-p", help = "Number of partitions to use for hash partitioning")
         .int()
-        .default(defaultHashPartitionCount)
+        .default(DEFAULT_HASH_PARTITION_COUNT)
         .check("must be greater than 0") { it > 0 }
 
     val strategies by option("--strategies", "-s", help = "Select which multi-tenant strategies to benchmark")
@@ -41,7 +41,7 @@ class Benchmark : CliktCommand() {
 
     val tenants by option("--tenants", "-t", help = "Number of tenants to generate")
         .int()
-        .default(defaultTenantCount)
+        .default(DEFAULT_TENANT_COUNT)
         .check("must be greater than 0") { it > 0 }
 
     val verbose by option("--verbose", "-v", help = "Print generated SQL to stdout")

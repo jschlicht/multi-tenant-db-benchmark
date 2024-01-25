@@ -1,0 +1,25 @@
+name: Tests
+on: [push]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
+        with:
+          gradle-version: wrapper
+          cache-read-only: true
+
+      - name: Run detekt
+        run: ./gradlew detektMain detektTest
+
+      - name: Run tests
+        run: ./gradlew test

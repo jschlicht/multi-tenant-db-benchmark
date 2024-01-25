@@ -21,7 +21,7 @@ class BenchmarkRunner(private val ctx: BenchmarkContext) {
         val dataGenerator = DataGenerator()
         val globalData = dataGenerator.globalData(shopCount = tenantCount)
 
-        val shopIds = globalData.shops.map { it.id!! }
+        val shopIds = globalData.shops.mapNotNull { it.id }
 
         definitionGenerator.run(shopIds)
 

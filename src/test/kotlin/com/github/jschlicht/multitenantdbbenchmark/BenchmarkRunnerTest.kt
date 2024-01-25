@@ -11,20 +11,22 @@ class BenchmarkRunnerTest {
     @ParameterizedTest
     @MethodSource("arguments")
     fun `runs all supported strategies against all supported databases`(database: Database, strategy: Strategy) {
-        BenchmarkRunner(BenchmarkContext(
-            database = database,
-            strategy = strategy,
-            outputPath = null,
-            verbose = false,
-            hashPartitionCount = 1,
-            tenantCount = 1
-        )).run()
+        BenchmarkRunner(
+            BenchmarkContext(
+                database = database,
+                strategy = strategy,
+                outputPath = null,
+                verbose = false,
+                hashPartitionCount = 1,
+                tenantCount = 1
+            )
+        ).run()
     }
 
     companion object {
         @JvmStatic
         @Suppress("detekt:UnusedPrivateMember")
-        private fun arguments() : List<Arguments> {
+        private fun arguments(): List<Arguments> {
             return BenchmarkRunner.databases.flatMap { database ->
                 BenchmarkRunner.strategies.mapNotNull { strategy ->
                     Arguments.of(database, strategy)
