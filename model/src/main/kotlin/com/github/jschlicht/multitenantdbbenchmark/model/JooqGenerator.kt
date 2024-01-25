@@ -82,15 +82,12 @@ class JooqGenerator {
         /* Ensure files are outputted to the correct directory regardless of whether the current working directory is
          * the project root (running from IDEA) or the model module (running tests).
          */
-
-        val currentDirectory = Path(".")
-
         val targetPath = if (Path(".", "gradlew").exists()) {
             Path("model")
         } else if (Path("..", "gradlew").exists()) {
             Path(".")
         } else {
-            throw IllegalStateException("Unable to determine project root directory")
+            error(("Unable to determine project root directory"))
         }.resolve(Path("src", "main", "kotlin"))
 
         return Target().apply {
